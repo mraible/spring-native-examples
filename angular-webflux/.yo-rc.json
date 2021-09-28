@@ -1,9 +1,9 @@
 {
   "generator-jhipster": {
     "applicationType": "monolith",
-    "baseName": "ngwebflux",
+    "baseName": "ngflux",
     "jhipsterVersion": "7.2.0",
-    "skipClient": true,
+    "skipClient": false,
     "skipServer": false,
     "skipUserManagement": true,
     "skipCheckLengthOfIdentifier": false,
@@ -11,11 +11,11 @@
     "jhiPrefix": "jhi",
     "entitySuffix": "",
     "dtoSuffix": "DTO",
-    "testFrameworks": [],
+    "testFrameworks": ["cypress"],
     "blueprints": [],
     "otherModules": [],
     "pages": [],
-    "creationTimestamp": 1632844293562,
+    "creationTimestamp": 1632864476803,
     "serviceDiscoveryType": "no",
     "reactive": true,
     "authenticationType": "oauth2",
@@ -33,16 +33,17 @@
     "messageBroker": false,
     "enableSwaggerCodegen": false,
     "clientFramework": "angularX",
+    "withAdminUi": true,
+    "clientTheme": "none",
     "enableTranslation": false,
     "nativeLanguage": "en",
-    "devServerPort": 9060,
+    "monorepository": true,
+    "skipCommitHook": true,
+    "devServerPort": 4200,
     "clientPackageManager": "npm",
-    "clientTheme": "none",
     "clientThemeVariant": "",
-    "withAdminUi": true,
     "enableGradleEnterprise": false,
     "languages": ["en", "fr"],
-    "monorepository": true,
-    "skipCommitHook": true
+    "cypressCoverage": false
   }
 }

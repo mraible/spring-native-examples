@@ -1,8 +1,8 @@
 # This configuration is intended for development purpose, it's **your** responsibility to harden it for production
 version: '3.8'
 services:
-  ngwebflux-app:
-    image: ngwebflux
+  ngflux-app:
+    image: ngflux
     environment:
       - _JAVA_OPTIONS=-Xmx512m -Xms256m
       - SPRING_PROFILES_ACTIVE=prod,api-docs

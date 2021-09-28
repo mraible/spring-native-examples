@@ -1,7 +1,7 @@
 # This configuration is intended for development purpose, it's **your** responsibility to harden it for production
 version: '3.8'
 services:
-  ngwebflux-prometheus:
+  ngflux-prometheus:
     image: prom/prometheus:v2.29.2
     volumes:
       - ./prometheus/:/etc/prometheus/
@@ -14,7 +14,7 @@ services:
     # On MacOS, remove next line and replace localhost by host.docker.internal in prometheus/prometheus.yml and
     # grafana/provisioning/datasources/datasource.yml
     network_mode: 'host' # to test locally running service
-  ngwebflux-grafana:
+  ngflux-grafana:
     image: grafana/grafana:8.1.3
     volumes:
       - ./grafana/provisioning/:/etc/grafana/provisioning/

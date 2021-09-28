@@ -13,6 +13,9 @@
 # Full reference is available at:
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
+logging:
+  level:
+    root: ERROR
 
 management:
   endpoints:
@@ -66,7 +69,7 @@ management:
 
 spring:
   application:
-    name: ngwebflux
+    name: ngflux
   profiles:
     # The commented value for `active` can be replaced with valid Spring profiles to load.
     # Otherwise, it will be filled in by maven when building the JAR file
@@ -86,13 +89,13 @@ spring:
     allow-bean-definition-overriding: true
   task:
     execution:
-      thread-name-prefix: ngwebflux-task-
+      thread-name-prefix: ngflux-task-
       pool:
         core-size: 2
         max-size: 50
         queue-capacity: 10000
     scheduling:
-      thread-name-prefix: ngwebflux-scheduling-
+      thread-name-prefix: ngflux-scheduling-
       pool:
         size: 2
   thymeleaf:
@@ -131,7 +134,7 @@ info:
 
 jhipster:
   clientApp:
-    name: 'ngwebfluxApp'
+    name: 'ngfluxApp'
   # By default CORS is disabled. Uncomment to enable.
   # cors:
   #   allowed-origins: "http://localhost:8100,http://localhost:9000"
@@ -141,12 +144,12 @@ jhipster:
   #   allow-credentials: true
   #   max-age: 1800
   mail:
-    from: ngwebflux@localhost
+    from: ngflux@localhost
   api-docs:
     default-include-pattern: ${server.servlet.context-path:}/api/.*
     management-include-pattern: ${server.servlet.context-path:}/management/.*
-    title: Ngwebflux API
-    description: Ngwebflux API documentation
+    title: Ngflux API
+    description: Ngflux API documentation
     version: 0.0.1
     terms-of-service-url:
     contact-name:

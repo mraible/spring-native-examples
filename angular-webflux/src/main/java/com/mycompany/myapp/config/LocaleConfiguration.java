@@ -1,15 +1,9 @@
 package com.mycompany.myapp.config;
 
-import java.time.Duration;
-import java.util.Locale;
-import java.util.TimeZone;
-import javax.annotation.Nonnull;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.i18n.SimpleLocaleContext;
@@ -23,8 +17,13 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.i18n.LocaleContextResolver;
 
+import javax.annotation.Nonnull;
+import java.time.Duration;
+import java.util.Locale;
+import java.util.TimeZone;
+
 @Configuration
-@Import(WebFluxAutoConfiguration.class)
+//@Import(WebFluxAutoConfiguration.class)
 public class LocaleConfiguration {
 
     @Bean(name = "localeContextResolver")

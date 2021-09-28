@@ -6,6 +6,7 @@ import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.security.SecurityUtils;
 import com.mycompany.myapp.security.oauth2.AudienceValidator;
 import com.mycompany.myapp.security.oauth2.JwtGrantedAuthorityConverter;
+import com.mycompany.myapp.web.filter.SpaWebFilter;
 import java.util.HashSet;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,6 +72,7 @@ public class SecurityConfiguration {
         .and()
             // See https://github.com/spring-projects/spring-security/issues/5766
             .addFilterAt(new CookieCsrfFilter(), SecurityWebFiltersOrder.REACTOR_CONTEXT)
+            .addFilterAt(new SpaWebFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
             .exceptionHandling()
                 .accessDeniedHandler(problemSupport)
                 .authenticationEntryPoint(problemSupport)
@@ -85,6 +87,8 @@ public class SecurityConfiguration {
                 .frameOptions().disable()
         .and()
             .authorizeExchange()
+            .pathMatchers("/").permitAll()
+            .pathMatchers("/*.*").permitAll()
             .pathMatchers("/api/authenticate").permitAll()
             .pathMatchers("/api/auth-info").permitAll()
             .pathMatchers("/api/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)

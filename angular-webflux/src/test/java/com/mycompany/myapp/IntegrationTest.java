@@ -1,6 +1,6 @@
 package com.mycompany.myapp;
 
-import com.mycompany.myapp.NgwebfluxApp;
+import com.mycompany.myapp.NgfluxApp;
 import com.mycompany.myapp.config.TestSecurityConfiguration;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,6 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@SpringBootTest(classes = { NgwebfluxApp.class, TestSecurityConfiguration.class })
+@SpringBootTest(classes = { NgfluxApp.class, TestSecurityConfiguration.class })
 public @interface IntegrationTest {
 }

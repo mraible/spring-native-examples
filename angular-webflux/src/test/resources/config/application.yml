@@ -15,7 +15,7 @@
 
 spring:
   application:
-    name: ngwebflux
+    name: ngflux
   jackson:
     serialization:
       write-durations-as-timestamps: false
@@ -27,13 +27,13 @@ spring:
     basename: i18n/messages
   task:
     execution:
-      thread-name-prefix: ngwebflux-task-
+      thread-name-prefix: ngflux-task-
       pool:
         core-size: 1
         max-size: 50
         queue-capacity: 10000
     scheduling:
-      thread-name-prefix: ngwebflux-scheduling-
+      thread-name-prefix: ngflux-scheduling-
       pool:
         size: 1
   thymeleaf:
@@ -58,7 +58,7 @@ server:
 
 jhipster:
   clientApp:
-    name: 'ngwebfluxApp'
+    name: 'ngfluxApp'
   logging:
     # To test json console appender
     use-json-format: false
