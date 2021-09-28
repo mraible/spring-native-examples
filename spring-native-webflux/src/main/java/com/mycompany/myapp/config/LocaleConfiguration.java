@@ -24,7 +24,7 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.i18n.LocaleContextResolver;
 
 @Configuration
-@Import(WebFluxAutoConfiguration.class)
+//@Import(WebFluxAutoConfiguration.class)
 public class LocaleConfiguration {
 
     @Bean(name = "localeContextResolver")

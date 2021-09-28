@@ -124,6 +124,16 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
         </dependency>
@@ -135,7 +145,7 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-oas</artifactId>
         </dependency>
@@ -146,7 +156,7 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-bean-validators</artifactId>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -183,10 +193,10 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-commons</artifactId>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-tcnative-boringssl-static</artifactId>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-logging</artifactId>
@@ -334,9 +344,6 @@
                         <builder>paketobuildpacks/builder:tiny</builder>
                         <env>
                             <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
-                            <!--<BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
-                                &#45;&#45;initialize-at-run-time=io.netty
-                            </BP_NATIVE_IMAGE_BUILD_ARGUMENTS>-->
                         </env>
                     </image>
                 </configuration>

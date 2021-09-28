@@ -83,6 +83,7 @@ spring:
   messages:
     basename: i18n/messages
   main:
+    web-application-type: REACTIVE
     allow-bean-definition-overriding: true
   task:
     execution:
