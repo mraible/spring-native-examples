@@ -13,7 +13,6 @@ import reactor.core.publisher.Mono;
  * Spring Data SQL reactive repository for the Blog entity.
  */
 @SuppressWarnings("unused")
-@Repository
 interface BlogRepository extends R2dbcRepository<Blog, Long> {
     @Query("SELECT * FROM blog entity WHERE entity.user_id = :id")
     Flux<Blog> findByUser(Long id);

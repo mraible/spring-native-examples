@@ -11,7 +11,6 @@ import reactor.core.publisher.Mono;
  * Spring Data SQL reactive repository for the Tag entity.
  */
 @SuppressWarnings("unused")
-@Repository
 public interface TagRepository extends R2dbcRepository<Tag, Long> {
     Flux<Tag> findAllBy(Pageable pageable);
 

@@ -54,7 +54,6 @@ import java.util.Optional;
         "reactor.core.publisher.Traces$ExceptionCallSiteSupplierFactory",
         "org.HdrHistogram.Histogram",
         "org.HdrHistogram.ConcurrentHistogram",
-        "com.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry",
         "com.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry[]"
     },
     access = AccessBits.ALL)

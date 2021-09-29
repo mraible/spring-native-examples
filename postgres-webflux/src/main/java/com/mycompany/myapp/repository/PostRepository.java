@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
  * Spring Data SQL reactive repository for the Post entity.
  */
 @SuppressWarnings("unused")
-@Repository
 interface PostRepository extends R2dbcRepository<Post, Long> {
     Flux<Post> findAllBy(Pageable pageable);
 
