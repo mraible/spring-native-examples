@@ -42,7 +42,10 @@ import java.util.Optional;
     ReactiveOAuth2AuthorizedClientManager.class,
     ReactiveOAuth2AuthorizedClientProviderBuilder.class,
     DefaultReactiveOAuth2AuthorizedClientManager.class,
-    AbstractWebClientReactiveOAuth2AccessTokenResponseClient.class
+    AbstractWebClientReactiveOAuth2AccessTokenResponseClient.class,
+    liquibase.configuration.LiquibaseConfiguration.class,
+    com.zaxxer.hikari.HikariDataSource.class,
+    liquibase.change.core.LoadDataColumnConfig.class
 },
     typeNames = {
         "org.springframework.web.reactive.function.client.DefaultWebClientBuilder",
@@ -50,7 +53,9 @@ import java.util.Optional;
         "reactor.core.publisher.Traces$SharedSecretsCallSiteSupplierFactory",
         "reactor.core.publisher.Traces$ExceptionCallSiteSupplierFactory",
         "org.HdrHistogram.Histogram",
-        "org.HdrHistogram.ConcurrentHistogram"
+        "org.HdrHistogram.ConcurrentHistogram",
+        "com.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry",
+        "com.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry[]"
     },
     access = AccessBits.ALL)
 @SpringBootApplication
