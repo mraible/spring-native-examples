@@ -2,7 +2,7 @@
 
 Create a reactive monolith with OIDC, then make the following changes.
 
-1. Modify pom.xml to add native, adjust dependencies, and disable devtools:
+. Modify `pom.xml` to add native, adjust dependencies, and disable devtools:
 +
 [source,xml]
 ----
@@ -147,9 +147,9 @@ Create a reactive monolith with OIDC, then make the following changes.
 </profile>
 ----
 
-2. Remove 127.0.0.1 from `keycloak.yml`
+. Remove 127.0.0.1 from `keycloak.yml`
 
-3. Delete `spring-lockback.xml`, tone down logging
+. Delete `spring-logback.xml` and tone down logging
 +
 [source,yaml]
 ----
@@ -158,37 +158,58 @@ logging:
     root: ERROR
 ----
 
-4. Update `LocaleConfiguration.java` to remove `@Import(WebFluxAutoConfiguration.class)`
+. Update `LocaleConfiguration.java` to remove `@Import(WebFluxAutoConfiguration.class)`
 
-5. Update main `App.java` to add hints
+. Update main `App.java` to add hints
 +
 [source,java]
 ----
 @NativeHint(options = "--enable-url-protocols=http,https")
-@TypeHint(types = {
-    ReactiveOAuth2AuthorizedClientManager.class,
-    ReactiveOAuth2AuthorizedClientProviderBuilder.class,
-    DefaultReactiveOAuth2AuthorizedClientManager.class,
-    AbstractWebClientReactiveOAuth2AccessTokenResponseClient.class
-},
+@TypeHint(
+    types = {
+        ReactiveOAuth2AuthorizedClientManager.class,
+        ReactiveOAuth2AuthorizedClientProviderBuilder.class,
+        DefaultReactiveOAuth2AuthorizedClientManager.class,
+        AbstractWebClientReactiveOAuth2AccessTokenResponseClient.class,
+        liquibase.configuration.LiquibaseConfiguration.class,
+        com.zaxxer.hikari.HikariDataSource.class,
+        liquibase.change.core.LoadDataColumnConfig.class,
+        org.HdrHistogram.Histogram.class,
+        org.HdrHistogram.ConcurrentHistogram.class,
+    },
     typeNames = {
         "org.springframework.web.reactive.function.client.DefaultWebClientBuilder",
         "reactor.core.publisher.Traces$StackWalkerCallSiteSupplierFactory",
         "reactor.core.publisher.Traces$SharedSecretsCallSiteSupplierFactory",
         "reactor.core.publisher.Traces$ExceptionCallSiteSupplierFactory",
-        "org.HdrHistogram.Histogram",
-        "org.HdrHistogram.ConcurrentHistogram"
+        "com.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry[]"
     },
     access = AccessBits.ALL)
 ----
 
-5. Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet]. Delete `LiquibaseConfiguration` and build with `./mvnw package -Pnative,prod -DskipTests`
+. Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet], but you can make it work by adding files from https://github.com/liquibase/liquibase/pull/2005[this pull request] to your `src/main/resources/META-INF/native-image/liquibase` directory
 
-6. If using Spring MVC, swap Undertow dependencies for Tomcat.
+. Add `@AotProxyHint` for Resource classes
++
+[source,java]
+----
+@AotProxyHint(targetClass = UserResource.class, proxyFeatures = ProxyBits.IS_STATIC)
+@AotProxyHint(targetClass = BlogResource.class, proxyFeatures = ProxyBits.IS_STATIC)
+@AotProxyHint(targetClass = PostResource.class, proxyFeatures = ProxyBits.IS_STATIC)
+@AotProxyHint(targetClass = TagResource.class, proxyFeatures = ProxyBits.IS_STATIC)
+----
+
+. If using Spring WebFlux, refactor repositories and add `@AotProxyHint` for them
+
+. If using Spring MVC, swap Undertow dependencies for Tomcat, modify `WebConfigurer` to comment out `setLocationForStaticAssets(server)`, and add additional type hints:
+
+- `tech.jhipster.domain.util.FixedPostgreSQL10Dialect.class`
+- `org.hibernate.type.TextType.class`
+
+. Build with  `./mvnw package -Pnative,prod -DskipTests`
 
 == Known Issues
 
 - Springfox (Swagger) doesn't work
 - Metrics don't work
-- Health checks don't work
-- R2DBC Repository issue with UserRepository
+- Repositories need refactoring for R2DBC

@@ -59,7 +59,7 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
     @Override
     public void customize(WebServerFactory server) {
         // When running in an IDE or with ./mvnw spring-boot:run, set location of the static web assets.
-        setLocationForStaticAssets(server);
+        // setLocationForStaticAssets(server);
     }
 
     private void setLocationForStaticAssets(WebServerFactory server) {
@@ -67,7 +67,7 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
             ConfigurableServletWebServerFactory servletWebServer = (ConfigurableServletWebServerFactory) server;
             File root;
             String prefixPath = resolvePathPrefix();
-            root = new File(prefixPath + "target/classes/static/");
+            root = new File(prefixPath + "./target/classes/static/");
             if (root.exists() && root.isDirectory()) {
                 servletWebServer.setDocumentRoot(root);
             }

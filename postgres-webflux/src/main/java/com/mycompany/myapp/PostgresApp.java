@@ -1,7 +1,10 @@
 package com.mycompany.myapp;
 
 import com.mycompany.myapp.config.ApplicationProperties;
-import com.mycompany.myapp.repository.*;
+import com.mycompany.myapp.repository.DefaultBlogRepository;
+import com.mycompany.myapp.repository.DefaultPostRepository;
+import com.mycompany.myapp.repository.DefaultTagRepository;
+import com.mycompany.myapp.repository.DefaultUserRepository;
 import com.mycompany.myapp.web.rest.BlogResource;
 import com.mycompany.myapp.web.rest.PostResource;
 import com.mycompany.myapp.web.rest.TagResource;
@@ -38,22 +41,23 @@ import java.util.Optional;
 @AotProxyHint(targetClass = DefaultTagRepository.class, proxyFeatures = ProxyBits.IS_STATIC)
 @AotProxyHint(targetClass = TagResource.class, proxyFeatures = ProxyBits.IS_STATIC)
 @NativeHint(options = "--enable-url-protocols=http,https")
-@TypeHint(types = {
-    ReactiveOAuth2AuthorizedClientManager.class,
-    ReactiveOAuth2AuthorizedClientProviderBuilder.class,
-    DefaultReactiveOAuth2AuthorizedClientManager.class,
-    AbstractWebClientReactiveOAuth2AccessTokenResponseClient.class,
-    liquibase.configuration.LiquibaseConfiguration.class,
-    com.zaxxer.hikari.HikariDataSource.class,
-    liquibase.change.core.LoadDataColumnConfig.class
-},
+@TypeHint(
+    types = {
+        ReactiveOAuth2AuthorizedClientManager.class,
+        ReactiveOAuth2AuthorizedClientProviderBuilder.class,
+        DefaultReactiveOAuth2AuthorizedClientManager.class,
+        AbstractWebClientReactiveOAuth2AccessTokenResponseClient.class,
+        org.HdrHistogram.Histogram.class,
+        org.HdrHistogram.ConcurrentHistogram.class,
+        liquibase.configuration.LiquibaseConfiguration.class,
+        com.zaxxer.hikari.HikariDataSource.class,
+        liquibase.change.core.LoadDataColumnConfig.class
+    },
     typeNames = {
         "org.springframework.web.reactive.function.client.DefaultWebClientBuilder",
         "reactor.core.publisher.Traces$StackWalkerCallSiteSupplierFactory",
         "reactor.core.publisher.Traces$SharedSecretsCallSiteSupplierFactory",
         "reactor.core.publisher.Traces$ExceptionCallSiteSupplierFactory",
-        "org.HdrHistogram.Histogram",
-        "org.HdrHistogram.ConcurrentHistogram",
         "com.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry[]"
     },
     access = AccessBits.ALL)
