@@ -1,14 +1,6 @@
 package com.mycompany.myapp;
 
 import com.mycompany.myapp.config.ApplicationProperties;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +17,13 @@ import org.springframework.security.oauth2.client.endpoint.AbstractWebClientReac
 import org.springframework.security.oauth2.client.web.DefaultReactiveOAuth2AuthorizedClientManager;
 import tech.jhipster.config.DefaultProfileUtil;
 import tech.jhipster.config.JHipsterConstants;
+
+import javax.annotation.PostConstruct;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Optional;
 
 @SpringBootApplication
 @NativeHint(options = "--enable-url-protocols=http,https")

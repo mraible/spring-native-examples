@@ -129,6 +129,8 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- Fixes NoClassDefFoundError: org/springframework/web/servlet/config/annotation/WebMvcConfigurer -->
+        <!-- Answer from https://stackoverflow.com/a/67426209/65681 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -151,6 +153,8 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
+        <!-- Springfox doesn't have support for Spring Native yet -->
+        <!-- https://github.com/springfox/springfox/issues/3816 -->
         <!--dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-oas</artifactId>

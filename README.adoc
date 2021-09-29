@@ -176,3 +176,10 @@ logging:
 ----
 
 5. Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet]. Build with `./mvnw package -Pnative,prod,no-liquibase -DskipTests`
+
+== Known Issues
+
+- Springfox (Swagger) doesn't work
+- Metrics don't work
+- Health checks don't work
+- R2DBC Repository issue with UserRepository
