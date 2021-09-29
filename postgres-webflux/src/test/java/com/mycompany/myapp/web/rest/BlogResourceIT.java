@@ -1,29 +1,27 @@
 package com.mycompany.myapp.web.rest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
-
 import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.domain.Blog;
-import com.mycompany.myapp.repository.BlogRepository;
+import com.mycompany.myapp.repository.DefaultBlogRepository;
 import com.mycompany.myapp.service.EntityManager;
-import java.time.Duration;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 
 /**
  * Integration tests for the {@link BlogResource} REST controller.
@@ -46,7 +44,7 @@ class BlogResourceIT {
     private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
-    private BlogRepository blogRepository;
+    private DefaultBlogRepository blogRepository;
 
     @Autowired
     private EntityManager em;
@@ -58,7 +56,7 @@ class BlogResourceIT {
 
     /**
      * Create an entity for this test.
-     *
+     * <p>
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
@@ -69,7 +67,7 @@ class BlogResourceIT {
 
     /**
      * Create an updated entity for this test.
-     *
+     * <p>
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */

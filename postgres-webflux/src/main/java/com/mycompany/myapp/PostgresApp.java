@@ -1,10 +1,7 @@
 package com.mycompany.myapp;
 
 import com.mycompany.myapp.config.ApplicationProperties;
-import com.mycompany.myapp.repository.BlogRepository;
-import com.mycompany.myapp.repository.DefaultUserRepository;
-import com.mycompany.myapp.repository.PostRepository;
-import com.mycompany.myapp.repository.TagRepository;
+import com.mycompany.myapp.repository.*;
 import com.mycompany.myapp.web.rest.BlogResource;
 import com.mycompany.myapp.web.rest.PostResource;
 import com.mycompany.myapp.web.rest.TagResource;
@@ -34,6 +31,12 @@ import java.util.Optional;
 
 @AotProxyHint(targetClass = DefaultUserRepository.class, proxyFeatures = ProxyBits.IS_STATIC)
 @AotProxyHint(targetClass = UserResource.class, proxyFeatures = ProxyBits.IS_STATIC)
+@AotProxyHint(targetClass = DefaultBlogRepository.class, proxyFeatures = ProxyBits.IS_STATIC)
+@AotProxyHint(targetClass = BlogResource.class, proxyFeatures = ProxyBits.IS_STATIC)
+@AotProxyHint(targetClass = DefaultPostRepository.class, proxyFeatures = ProxyBits.IS_STATIC)
+@AotProxyHint(targetClass = PostResource.class, proxyFeatures = ProxyBits.IS_STATIC)
+@AotProxyHint(targetClass = DefaultTagRepository.class, proxyFeatures = ProxyBits.IS_STATIC)
+@AotProxyHint(targetClass = TagResource.class, proxyFeatures = ProxyBits.IS_STATIC)
 @NativeHint(options = "--enable-url-protocols=http,https")
 @TypeHint(types = {
     ReactiveOAuth2AuthorizedClientManager.class,
@@ -46,9 +49,6 @@ import java.util.Optional;
         "reactor.core.publisher.Traces$StackWalkerCallSiteSupplierFactory",
         "reactor.core.publisher.Traces$SharedSecretsCallSiteSupplierFactory",
         "reactor.core.publisher.Traces$ExceptionCallSiteSupplierFactory",
-        "com.mycompany.myapp.repository.UserRepositoryInternal",
-        "com.mycompany.myapp.repository.UserRepositoryInternal$UserRepositoryInternalImpl",
-        "com.mycompany.myapp.domain.User",
         "org.HdrHistogram.Histogram",
         "org.HdrHistogram.ConcurrentHistogram"
     },

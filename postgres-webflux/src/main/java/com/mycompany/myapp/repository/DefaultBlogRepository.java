@@ -25,18 +25,20 @@ import org.springframework.data.relational.core.sql.SelectBuilder.SelectFromAndJ
 import org.springframework.data.relational.core.sql.Table;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.RowsFetchSpec;
+import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
  * Spring Data SQL reactive custom repository implementation for the Blog entity.
  */
-@SuppressWarnings("unused")
-class BlogRepositoryInternalImpl implements BlogRepositoryInternal {
+@Repository
+public class DefaultBlogRepository {
 
     private final DatabaseClient db;
     private final R2dbcEntityTemplate r2dbcEntityTemplate;
     private final EntityManager entityManager;
+    private final BlogRepository repository;
 
     private final UserRowMapper userMapper;
     private final BlogRowMapper blogMapper;
@@ -44,12 +46,14 @@ class BlogRepositoryInternalImpl implements BlogRepositoryInternal {
     private static final Table entityTable = Table.aliased("blog", EntityManager.ENTITY_ALIAS);
     private static final Table userTable = Table.aliased("jhi_user", "e_user");
 
-    public BlogRepositoryInternalImpl(
+    public DefaultBlogRepository(
+        BlogRepository repository,
         R2dbcEntityTemplate template,
         EntityManager entityManager,
         UserRowMapper userMapper,
         BlogRowMapper blogMapper
     ) {
+        this.repository = repository;
         this.db = template.getDatabaseClient();
         this.r2dbcEntityTemplate = template;
         this.entityManager = entityManager;
@@ -57,12 +61,10 @@ class BlogRepositoryInternalImpl implements BlogRepositoryInternal {
         this.blogMapper = blogMapper;
     }
 
-    @Override
     public Flux<Blog> findAllBy(Pageable pageable) {
         return findAllBy(pageable, null);
     }
 
-    @Override
     public Flux<Blog> findAllBy(Pageable pageable, Criteria criteria) {
         return createQuery(pageable, criteria).all();
     }
@@ -96,12 +98,10 @@ class BlogRepositoryInternalImpl implements BlogRepositoryInternal {
         return db.sql(selectWhere).map(this::process);
     }
 
-    @Override
     public Flux<Blog> findAll() {
-        return findAllBy(null, null);
+        return repository.findAll();
     }
 
-    @Override
     public Mono<Blog> findById(Long id) {
         return createQuery(null, where("id").is(id)).one();
     }
@@ -112,12 +112,10 @@ class BlogRepositoryInternalImpl implements BlogRepositoryInternal {
         return entity;
     }
 
-    @Override
     public <S extends Blog> Mono<S> insert(S entity) {
         return entityManager.insert(entity);
     }
 
-    @Override
     public <S extends Blog> Mono<S> save(S entity) {
         if (entity.getId() == null) {
             return insert(entity);
@@ -132,10 +130,17 @@ class BlogRepositoryInternalImpl implements BlogRepositoryInternal {
         }
     }
 
-    @Override
     public Mono<Integer> update(Blog entity) {
         //fixme is this the proper way?
         return r2dbcEntityTemplate.update(entity).thenReturn(1);
+    }
+
+    public Mono<Boolean> existsById(Long id) {
+        return repository.existsById(id);
+    }
+
+    public Mono<Void> deleteById(Long id) {
+        return repository.deleteById(id);
     }
 }
 

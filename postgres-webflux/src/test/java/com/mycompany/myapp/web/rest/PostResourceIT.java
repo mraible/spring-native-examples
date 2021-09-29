@@ -1,22 +1,9 @@
 package com.mycompany.myapp.web.rest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
-import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
-
 import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.domain.Post;
-import com.mycompany.myapp.repository.PostRepository;
+import com.mycompany.myapp.repository.DefaultPostRepository;
 import com.mycompany.myapp.service.EntityManager;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,14 +12,22 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.util.Base64Utils;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 
 /**
  * Integration tests for the {@link PostResource} REST controller.
@@ -59,10 +54,10 @@ class PostResourceIT {
     private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
-    private PostRepository postRepository;
+    private DefaultPostRepository postRepository;
 
     @Mock
-    private PostRepository postRepositoryMock;
+    private DefaultPostRepository postRepositoryMock;
 
     @Autowired
     private EntityManager em;
@@ -74,7 +69,7 @@ class PostResourceIT {
 
     /**
      * Create an entity for this test.
-     *
+     * <p>
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
@@ -85,7 +80,7 @@ class PostResourceIT {
 
     /**
      * Create an updated entity for this test.
-     *
+     * <p>
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
@@ -231,7 +226,7 @@ class PostResourceIT {
             .value(hasItem(DEFAULT_DATE.toString()));
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({"unchecked"})
     void getAllPostsWithEagerRelationshipsIsEnabled() {
         when(postRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(Flux.empty());
 
@@ -240,7 +235,7 @@ class PostResourceIT {
         verify(postRepositoryMock, times(1)).findAllWithEagerRelationships(any());
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({"unchecked"})
     void getAllPostsWithEagerRelationshipsIsNotEnabled() {
         when(postRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(Flux.empty());
 

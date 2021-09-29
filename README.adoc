@@ -1,6 +1,6 @@
 = Steps to integrate Spring Native with JHipster
 
-Create a reactive monolith with OIDC, then make the following changes. 
+Create a reactive monolith with OIDC, then make the following changes.
 
 1. Modify pom.xml to add native, adjust dependencies, and disable devtools:
 +
@@ -14,7 +14,7 @@ Create a reactive monolith with OIDC, then make the following changes.
         <enabled>false</enabled>
     </snapshots>
 </repository>
-        
+
 <pluginRepository>
     <id>spring-releases</id>
     <name>Spring Releases</name>
@@ -26,9 +26,16 @@ Create a reactive monolith with OIDC, then make the following changes.
 ...
 
 <repackage.classifier/>
-<spring-native.version>0.10.4</spring-native.version>                        
+<spring-native.version>0.10.4</spring-native.version>
 ...
-                        
+
+<!-- Comment out devtools -->
+<!--dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-devtools</artifactId>
+    <optional>true</optional>
+</dependency-->
+
 <!-- Fixes NoClassDefFoundError: org/springframework/web/servlet/config/annotation/WebMvcConfigurer -->
 <!-- Answer from https://stackoverflow.com/a/67426209/65681 -->
 <dependency>
@@ -175,7 +182,9 @@ logging:
     access = AccessBits.ALL)
 ----
 
-5. Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet]. Build with `./mvnw package -Pnative,prod,no-liquibase -DskipTests`
+5. Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet]. Delete `LiquibaseConfiguration` and build with `./mvnw package -Pnative,prod -DskipTests`
+
+6. If using Spring MVC, swap Undertow dependencies for Tomcat.
 
 == Known Issues
 

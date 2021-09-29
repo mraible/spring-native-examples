@@ -46,6 +46,6 @@
     "languages": ["en", "fr"],
     "cypressCoverage": false,
     "entities": ["Blog", "Post", "Tag"],
-    "lastLiquibaseTimestamp": 1632872631000
+    "lastLiquibaseTimestamp": 1632939293000
   }
 }

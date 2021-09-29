@@ -1,6 +1,7 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Tag;
+import com.mycompany.myapp.repository.DefaultTagRepository;
 import com.mycompany.myapp.repository.TagRepository;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -47,9 +48,9 @@ public class TagResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final TagRepository tagRepository;
+    private final DefaultTagRepository tagRepository;
 
-    public TagResource(TagRepository tagRepository) {
+    public TagResource(DefaultTagRepository tagRepository) {
         this.tagRepository = tagRepository;
     }
 

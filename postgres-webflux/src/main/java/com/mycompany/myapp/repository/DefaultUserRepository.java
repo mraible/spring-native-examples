@@ -43,11 +43,9 @@ public class DefaultUserRepository {
         return this.repository.findAll();
     }
 
-
     public Mono<User> findOneWithAuthoritiesByLogin(String login) {
         return findOneWithAuthoritiesBy("login", login);
     }
-
 
     public Flux<User> findAllWithAuthorities(Pageable pageable) {
         String property = pageable.getSort().stream().map(Sort.Order::getProperty).findFirst().orElse("id");
@@ -73,7 +71,6 @@ public class DefaultUserRepository {
             .skip(page * size)
             .take(size);
     }
-
 
     public Mono<User> create(User user) {
         return r2dbcEntityTemplate.insert(User.class).using(user).defaultIfEmpty(user);
@@ -107,7 +104,6 @@ public class DefaultUserRepository {
 
         return user;
     }
-
 
     public Mono<User> findOneByLogin(String login) {
         return this.repository.findOneByLogin(login);
@@ -144,10 +140,7 @@ public class DefaultUserRepository {
     public Mono<User> save(User entity) {
         return this.repository.save(entity);
     }
-
-
 }
-
 
 class UserSqlHelper {
 

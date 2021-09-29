@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface BlogRepository extends R2dbcRepository<Blog, Long>, BlogRepositoryInternal {
+interface BlogRepository extends R2dbcRepository<Blog, Long> {
     @Query("SELECT * FROM blog entity WHERE entity.user_id = :id")
     Flux<Blog> findByUser(Long id);
 
@@ -30,15 +30,4 @@ public interface BlogRepository extends R2dbcRepository<Blog, Long>, BlogReposit
 
     @Override
     <S extends Blog> Mono<S> save(S entity);
-}
-
-interface BlogRepositoryInternal {
-    <S extends Blog> Mono<S> insert(S entity);
-    <S extends Blog> Mono<S> save(S entity);
-    Mono<Integer> update(Blog entity);
-
-    Flux<Blog> findAll();
-    Mono<Blog> findById(Long id);
-    Flux<Blog> findAllBy(Pageable pageable);
-    Flux<Blog> findAllBy(Pageable pageable, Criteria criteria);
 }
