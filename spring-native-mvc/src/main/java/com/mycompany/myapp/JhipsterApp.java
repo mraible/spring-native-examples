@@ -4,56 +4,22 @@ import com.mycompany.myapp.config.ApplicationProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.env.Environment;
-import org.springframework.nativex.hint.AccessBits;
-import org.springframework.nativex.hint.JdkProxyHint;
 import org.springframework.nativex.hint.NativeHint;
-import org.springframework.nativex.hint.TypeHint;
+import tech.jhipster.config.DefaultProfileUtil;
 import tech.jhipster.config.JHipsterConstants;
 
+import javax.annotation.PostConstruct;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
-@NativeHint(
-    jdkProxies = {
-        @JdkProxyHint(typeNames = {
-            "java.util.List",
-            "org.springframework.aop.SpringProxy",
-            "org.springframework.aop.framework.Advised",
-            "org.springframework.core.DecoratingProxy"
-        })
-    },
-    options= {"--enable-url-protocols=http", "--enable-url-protocols=https"},
-    types = @TypeHint(
-        access = AccessBits.ALL,
-        typeNames = {
-            "springfox.documentation.spi.schema.ModelBuilderPlugin",
-            "springfox.documentation.spi.schema.ModelPropertyBuilderPlugin",
-            "springfox.documentation.spi.schema.SyntheticModelProviderPlugin",
-            "springfox.documentation.spi.schema.TypeNameProviderPlugin",
-            "springfox.documentation.spi.schema.ViewProviderPlugin",
-            "springfox.documentation.spi.service.DocumentationPlugin",
-            "springfox.documentation.spi.service.ApiListingBuilderPlugin",
-            "springfox.documentation.spi.service.ApiListingScannerPlugin",
-            "springfox.documentation.spi.service.DefaultsProviderPlugin",
-            "springfox.documentation.spi.service.ExpandedParameterBuilderPlugin",
-            "springfox.documentation.spi.service.ModelNamesRegistryFactoryPlugin",
-            "springfox.documentation.spi.service.OperationBuilderPlugin",
-            "springfox.documentation.spi.service.OperationModelsProviderPlugin",
-            "springfox.documentation.spi.service.ParameterBuilderPlugin",
-            "springfox.documentation.spi.service.ResponseBuilderPlugin",
-            "springfox.documentation.service.PathDecorator",
-            "springfox.documentation.spi.DocumentationType",
-            "org.springframework.plugin.core.support.PluginRegistryFactoryBean"
-        }
-    )
-)
+@NativeHint(options = "--enable-url-protocols=http,https")
 @SpringBootApplication
 @EnableConfigurationProperties({ApplicationProperties.class})
 public class JhipsterApp {
@@ -73,7 +39,7 @@ public class JhipsterApp {
      * <p>
      * You can find more information on how profiles work with JHipster on <a href="https://www.jhipster.tech/profiles/">https://www.jhipster.tech/profiles/</a>.
      */
-    // @PostConstruct
+    @PostConstruct
     public void initApplication() {
         Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
         if (
@@ -100,11 +66,10 @@ public class JhipsterApp {
      * @param args the command line arguments.
      */
     public static void main(String[] args) {
-        new SpringApplicationBuilder().main(JhipsterApp.class).profiles("dev").build(args);
-        //SpringApplication app = new SpringApplication(JhipsterApp.class);
-        //DefaultProfileUtil.addDefaultProfile(app);
-        //Environment env = app.run(args).getEnvironment();
-        //logApplicationStartup(env);
+        SpringApplication app = new SpringApplication(JhipsterApp.class);
+        DefaultProfileUtil.addDefaultProfile(app);
+        Environment env = app.run(args).getEnvironment();
+        logApplicationStartup(env);
     }
 
     private static void logApplicationStartup(Environment env) {
