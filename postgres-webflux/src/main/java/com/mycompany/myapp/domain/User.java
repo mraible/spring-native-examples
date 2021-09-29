@@ -23,9 +23,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class User extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private String create;
-    private String findAllWithAuthorities;
-    private String findOneWithAuthoritiesByLogin;
+
 
     @Id
     private String id;

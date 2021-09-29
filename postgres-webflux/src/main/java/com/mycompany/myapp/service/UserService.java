@@ -4,7 +4,7 @@ import com.mycompany.myapp.config.Constants;
 import com.mycompany.myapp.domain.Authority;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.AuthorityRepository;
-import com.mycompany.myapp.repository.UserRepository;
+import com.mycompany.myapp.repository.DefaultUserRepository;
 import com.mycompany.myapp.security.SecurityUtils;
 import com.mycompany.myapp.service.dto.AdminUserDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
@@ -32,11 +32,11 @@ public class UserService {
 
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    private final UserRepository userRepository;
+    private final DefaultUserRepository userRepository;
 
     private final AuthorityRepository authorityRepository;
 
-    public UserService(UserRepository userRepository, AuthorityRepository authorityRepository) {
+    public UserService(DefaultUserRepository userRepository, AuthorityRepository authorityRepository) {
         this.userRepository = userRepository;
         this.authorityRepository = authorityRepository;
     }

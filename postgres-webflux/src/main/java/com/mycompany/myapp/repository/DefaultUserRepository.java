@@ -1,21 +1,12 @@
 package com.mycompany.myapp.repository;
 
-import static org.springframework.data.relational.core.query.Criteria.where;
-import static org.springframework.data.relational.core.query.Query.query;
-
 import com.mycompany.myapp.domain.Authority;
 import com.mycompany.myapp.domain.User;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.apache.commons.beanutils.BeanComparator;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
-import org.springframework.data.r2dbc.repository.Query;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.relational.core.sql.Column;
 import org.springframework.data.relational.core.sql.Expression;
 import org.springframework.data.relational.core.sql.Table;
@@ -26,62 +17,38 @@ import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
-/**
- * Spring Data R2DBC repository for the {@link User} entity.
- */
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-
-
-interface UserRepository extends R2dbcRepository<User, String>
-    /*UserRepositoryInternal*/
-{
-    Mono<User> findOneByLogin(String login);
-
-    Flux<User> findAllByIdNotNull(Pageable pageable);
-
-    Flux<User> findAllByIdNotNullAndActivatedIsTrue(Pageable pageable);
-
-    Mono<Long> count();
-
-    @Query("INSERT INTO jhi_user_authority VALUES(:userId, :authority)")
-    Mono<Void> saveUserAuthority(String userId, String authority);
-
-    @Query("DELETE FROM jhi_user_authority")
-    Mono<Void> deleteAllUserAuthorities();
-
-    @Query("DELETE FROM jhi_user_authority WHERE user_id = :userId")
-    Mono<Void> deleteUserAuthorities(Long userId);
-}
-
-
-
-/*
-interface UserRepositoryInternal {
-    Mono<User> findOneWithAuthoritiesByLogin(String login);
-
-    Mono<User> create(User user);
-
-    Flux<User> findAllWithAuthorities(Pageable pageable);
-}
-
-class UserRepositoryInternalImpl  implements UserRepositoryInternal {
+@Repository
+public class DefaultUserRepository {
 
     private final DatabaseClient db;
     private final R2dbcEntityTemplate r2dbcEntityTemplate;
     private final R2dbcConverter r2dbcConverter;
+    private final UserRepository repository;
 
-    public UserRepositoryInternalImpl(DatabaseClient db, R2dbcEntityTemplate r2dbcEntityTemplate, R2dbcConverter r2dbcConverter) {
+    public DefaultUserRepository(
+        UserRepository repository,
+        DatabaseClient db, R2dbcEntityTemplate r2dbcEntityTemplate, R2dbcConverter r2dbcConverter) {
         this.db = db;
+        this.repository = repository;
         this.r2dbcEntityTemplate = r2dbcEntityTemplate;
         this.r2dbcConverter = r2dbcConverter;
     }
 
-    @Override
+    public Flux<User> findAll() {
+        return this.repository.findAll();
+    }
+
+
     public Mono<User> findOneWithAuthoritiesByLogin(String login) {
         return findOneWithAuthoritiesBy("login", login);
     }
 
-    @Override
+
     public Flux<User> findAllWithAuthorities(Pageable pageable) {
         String property = pageable.getSort().stream().map(Sort.Order::getProperty).findFirst().orElse("id");
         String direction = String.valueOf(
@@ -107,7 +74,7 @@ class UserRepositoryInternalImpl  implements UserRepositoryInternal {
             .take(size);
     }
 
-    @Override
+
     public Mono<User> create(User user) {
         return r2dbcEntityTemplate.insert(User.class).using(user).defaultIfEmpty(user);
     }
@@ -140,5 +107,60 @@ class UserRepositoryInternalImpl  implements UserRepositoryInternal {
 
         return user;
     }
+
+
+    public Mono<User> findOneByLogin(String login) {
+        return this.repository.findOneByLogin(login);
+    }
+
+    public Flux<User> findAllByIdNotNull(Pageable pageable) {
+        return this.repository.findAllByIdNotNull(pageable);
+    }
+
+    public Flux<User> findAllByIdNotNullAndActivatedIsTrue(Pageable pageable) {
+        return this.repository.findAllByIdNotNullAndActivatedIsTrue(pageable);
+    }
+
+    public Mono<Long> count() {
+        return this.repository.count();
+    }
+
+    public Mono<Void> saveUserAuthority(String userId, String authority) {
+        return this.repository.saveUserAuthority(userId, authority);
+    }
+
+    public Mono<Void> deleteAll() {
+        return this.repository.deleteAll();
+    }
+
+    public Mono<Void> deleteAllUserAuthorities() {
+        return this.repository.deleteAllUserAuthorities();
+    }
+
+    public Mono<Void> deleteUserAuthorities(Long userId) {
+        return repository.deleteUserAuthorities(userId);
+    }
+
+    public Mono<User> save(User entity) {
+        return this.repository.save(entity);
+    }
+
+
 }
- */
+
+
+class UserSqlHelper {
+
+    static List<Expression> getColumns(Table table, String columnPrefix) {
+        List<Expression> columns = new ArrayList<>();
+        columns.add(Column.aliased("id", table, columnPrefix + "_id"));
+        columns.add(Column.aliased("login", table, columnPrefix + "_login"));
+        columns.add(Column.aliased("first_name", table, columnPrefix + "_first_name"));
+        columns.add(Column.aliased("last_name", table, columnPrefix + "_last_name"));
+        columns.add(Column.aliased("email", table, columnPrefix + "_email"));
+        columns.add(Column.aliased("activated", table, columnPrefix + "_activated"));
+        columns.add(Column.aliased("lang_key", table, columnPrefix + "_lang_key"));
+        columns.add(Column.aliased("image_url", table, columnPrefix + "_image_url"));
+        return columns;
+    }
+}
