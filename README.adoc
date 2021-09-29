@@ -1,0 +1,178 @@
+= Steps to integrate Spring Native with JHipster
+
+Create a reactive monolith with OIDC, then make the following changes. 
+
+1. Modify pom.xml to add native, adjust dependencies, and disable devtools:
++
+[source,xml]
+----
+<repository>
+    <id>spring-releases</id>
+    <name>Spring Releases</name>
+    <url>https://repo.spring.io/release</url>
+    <snapshots>
+        <enabled>false</enabled>
+    </snapshots>
+</repository>
+        
+<pluginRepository>
+    <id>spring-releases</id>
+    <name>Spring Releases</name>
+    <url>https://repo.spring.io/release</url>
+    <snapshots>
+        <enabled>false</enabled>
+    </snapshots>
+</pluginRepository>
+...
+
+<repackage.classifier/>
+<spring-native.version>0.10.4</spring-native.version>                        
+...
+                        
+<!-- Fixes NoClassDefFoundError: org/springframework/web/servlet/config/annotation/WebMvcConfigurer -->
+<!-- Answer from https://stackoverflow.com/a/67426209/65681 -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+...
+
+<!-- Springfox doesn't have support for Spring Native yet, so comment out Springfox dependencies -->
+<!-- https://github.com/springfox/springfox/issues/3816 -->
+...
+
+<!-- Removing allows Spring Native to build the image and gets around this error:
+    Error: Classes that should be initialized at run time got initialized during image building:
+    io.netty.buffer.UnpooledUnsafeDirectByteBuf the class was requested to be initialized at run time
+    (subtype of io.netty.buffer.AbstractReferenceCountedByteBuf).
+    To see why io.netty.buffer.UnpooledUnsafeDirectByteB got initialized use
+    trace-class-initialization=io.netty.buffer.UnpooledUnsafeDirectByteBuf
+-->
+<!--dependency>
+    <groupId>io.netty</groupId>
+    <artifactId>netty-tcnative-boringssl-static</artifactId>
+</dependency-->
+
+<dependency>
+    <groupId>org.springframework.experimental</groupId>
+    <artifactId>spring-native</artifactId>
+    <version>${spring-native.version}</version>
+</dependency>
+
+<plugin>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-maven-plugin</artifactId>
+    <configuration>
+        <classifier>${repackage.classifier}</classifier>
+        <image>
+            <builder>paketobuildpacks/builder:tiny</builder>
+            <env>
+                <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
+            </env>
+        </image>
+    </configuration>
+</plugin>
+<plugin>
+    <groupId>org.springframework.experimental</groupId>
+    <artifactId>spring-aot-maven-plugin</artifactId>
+    <version>${spring-native.version}</version>
+    <executions>
+        <execution>
+            <id>test-generate</id>
+            <goals>
+                <goal>test-generate</goal>
+            </goals>
+        </execution>
+        <execution>
+            <id>generate</id>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+
+<profile>
+    <id>native</id>
+    <properties>
+        <repackage.classifier>exec</repackage.classifier>
+        <native-buildtools.version>0.9.3</native-buildtools.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.graalvm.buildtools</groupId>
+            <artifactId>junit-platform-native</artifactId>
+            <version>${native-buildtools.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <version>${native-buildtools.version}</version>
+                <executions>
+                    <execution>
+                        <id>test-native</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>build-native</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</profile>
+----
+
+2. Remove 127.0.0.1 from `keycloak.yml`
+
+3. Delete `spring-lockback.xml`, tone down logging
++
+[source,yaml]
+----
+logging:
+  level:
+    root: ERROR
+----
+
+4. Update `LocaleConfiguration.java` to remove `@Import(WebFluxAutoConfiguration.class)`
+
+5. Update main `App.java` to add hints
++
+[source,java]
+----
+@NativeHint(options = "--enable-url-protocols=http,https")
+@TypeHint(types = {
+    ReactiveOAuth2AuthorizedClientManager.class,
+    ReactiveOAuth2AuthorizedClientProviderBuilder.class,
+    DefaultReactiveOAuth2AuthorizedClientManager.class,
+    AbstractWebClientReactiveOAuth2AccessTokenResponseClient.class
+},
+    typeNames = {
+        "org.springframework.web.reactive.function.client.DefaultWebClientBuilder",
+        "reactor.core.publisher.Traces$StackWalkerCallSiteSupplierFactory",
+        "reactor.core.publisher.Traces$SharedSecretsCallSiteSupplierFactory",
+        "reactor.core.publisher.Traces$ExceptionCallSiteSupplierFactory",
+        "org.HdrHistogram.Histogram",
+        "org.HdrHistogram.ConcurrentHistogram"
+    },
+    access = AccessBits.ALL)
+----
+
+5. Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet]. Build with `./mvnw package -Pnative,prod,no-liquibase -DskipTests`
