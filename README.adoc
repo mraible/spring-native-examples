@@ -189,7 +189,7 @@ logging:
 
 . Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet], but you can make it work by adding files from https://github.com/liquibase/liquibase/pull/2005[this pull request] to your `src/main/resources/META-INF/native-image/liquibase` directory
 
-. Add `@AotProxyHint` for Resource classes
+. Add an `@AotProxyHint` for each Resource classes
 +
 [source,java]
 ----
@@ -199,7 +199,7 @@ logging:
 @AotProxyHint(targetClass = TagResource.class, proxyFeatures = ProxyBits.IS_STATIC)
 ----
 
-. If using Spring WebFlux, refactor repositories and add `@AotProxyHint` for them
+. If using Spring WebFlux, refactor repositories and add `@AotProxyHint` for each one 
 
 . If using Spring MVC, swap Undertow dependencies for Tomcat, modify `WebConfigurer` to comment out `setLocationForStaticAssets(server)`, and add additional type hints:
 
