@@ -1,6 +1,14 @@
-= Steps to integrate Spring Native with JHipster
+= Spring Native with JHipster
 
-Create a reactive monolith with OIDC, then make the following changes.
+This repository contains five JHipster apps we (@joshlong and @mraible) used to figure out how to make Spring Native work.
+
+- `spring-native-webflux` - no client, no db, just WebFlux
+- `spring-native-mvc` - no client, no db, just Spring MVC
+- `angular-webflux` - Angular client, no db
+- `postgres-webflux` - Angular, WebFlux, R2DBC + PostgreSQL
+- `postgres-mvc` - Angular, Spring MVC, JPA + PostgreSQL
+
+You should be able to create a JHipster monolith with OIDC, then make the following changes.
 
 . Modify `pom.xml` to add native, adjust dependencies, and disable devtools:
 +
@@ -147,7 +155,7 @@ Create a reactive monolith with OIDC, then make the following changes.
 </profile>
 ----
 
-. Remove 127.0.0.1 from `keycloak.yml`
+. Remove the `127.0.0.1` prefix from `keycloak.yml`
 
 . Delete `spring-logback.xml` and tone down logging
 +
@@ -199,9 +207,9 @@ logging:
 @AotProxyHint(targetClass = TagResource.class, proxyFeatures = ProxyBits.IS_STATIC)
 ----
 
-. If using Spring WebFlux, refactor repositories and add `@AotProxyHint` for each one 
+. If using Spring WebFlux, refactor repositories and add `@AotProxyHint` for each one
 
-. If using Spring MVC, swap Undertow dependencies for Tomcat, modify `WebConfigurer` to comment out `setLocationForStaticAssets(server)`, and add additional type hints:
+. If using Spring MVC, swap Undertow dependencies for Tomcat, modify `WebConfigurer` to comment out `setLocationForStaticAssets(server)`, and add additional type hints for the following classes:
 
 - `tech.jhipster.domain.util.FixedPostgreSQL10Dialect.class`
 - `org.hibernate.type.TextType.class`
