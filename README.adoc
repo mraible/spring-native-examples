@@ -1,6 +1,6 @@
 = Spring Native with JHipster
 
-This repository contains five JHipster apps we (https://github.com/joshlong[@joshlong] and https://github.com/mraible[@mraible]) used to figure out how to make Spring Native work.
+This repository contains five apps we (https://github.com/joshlong[@joshlong] and https://github.com/mraible[@mraible]) used to figure out how to make Spring Native work with JHipster.
 
 - `spring-native-webflux` - no client, no db, just WebFlux
 - `spring-native-mvc` - no client, no db, just Spring MVC
