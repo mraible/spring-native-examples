@@ -36,7 +36,7 @@ Create a reactive monolith with OIDC, then make the following changes.
     <optional>true</optional>
 </dependency-->
 
-<!-- Fixes NoClassDefFoundError: org/springframework/web/servlet/config/annotation/WebMvcConfigurer -->
+<!-- If reactive, add the following to fix NoClassDefFoundError: org/springframework/web/servlet/config/annotation/WebMvcConfigurer -->
 <!-- Answer from https://stackoverflow.com/a/67426209/65681 -->
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -54,7 +54,7 @@ Create a reactive monolith with OIDC, then make the following changes.
 <!-- https://github.com/springfox/springfox/issues/3816 -->
 ...
 
-<!-- Removing allows Spring Native to build the image and gets around this error:
+<!-- If reactive, comment out boringssl. This allows Spring Native to build the image and gets around this error:
     Error: Classes that should be initialized at run time got initialized during image building:
     io.netty.buffer.UnpooledUnsafeDirectByteBuf the class was requested to be initialized at run time
     (subtype of io.netty.buffer.AbstractReferenceCountedByteBuf).
@@ -158,9 +158,9 @@ logging:
     root: ERROR
 ----
 
-. Update `LocaleConfiguration.java` to remove `@Import(WebFluxAutoConfiguration.class)`
+. If reactive, update `LocaleConfiguration.java` to remove `@Import(WebFluxAutoConfiguration.class)`
 
-. Update main `App.java` to add hints
+. Update main `App.java` to add hints (first four of each list only required for reactive)
 +
 [source,java]
 ----
