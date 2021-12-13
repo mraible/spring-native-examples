@@ -13,7 +13,8 @@ import reactor.core.publisher.Mono;
  * Spring Data SQL reactive repository for the Blog entity.
  */
 @SuppressWarnings("unused")
-interface BlogRepository extends R2dbcRepository<Blog, Long> {
+@Repository
+public interface BlogRepository extends R2dbcRepository<Blog, Long>, BlogRepositoryInternal {
     @Query("SELECT * FROM blog entity WHERE entity.user_id = :id")
     Flux<Blog> findByUser(Long id);
 
@@ -29,4 +30,15 @@ interface BlogRepository extends R2dbcRepository<Blog, Long> {
 
     @Override
     <S extends Blog> Mono<S> save(S entity);
+}
+
+interface BlogRepositoryInternal {
+    <S extends Blog> Mono<S> insert(S entity);
+    <S extends Blog> Mono<S> save(S entity);
+    Mono<Integer> update(Blog entity);
+
+    Flux<Blog> findAll();
+    Mono<Blog> findById(Long id);
+    Flux<Blog> findAllBy(Pageable pageable);
+    Flux<Blog> findAllBy(Pageable pageable, Criteria criteria);
 }

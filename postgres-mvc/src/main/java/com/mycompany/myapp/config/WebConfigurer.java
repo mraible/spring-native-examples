@@ -5,7 +5,6 @@ import static java.net.URLDecoder.decode;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
-import java.util.*;
 import javax.servlet.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +58,7 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
     @Override
     public void customize(WebServerFactory server) {
         // When running in an IDE or with ./mvnw spring-boot:run, set location of the static web assets.
-        // setLocationForStaticAssets(server);
+        setLocationForStaticAssets(server);
     }
 
     private void setLocationForStaticAssets(WebServerFactory server) {
@@ -67,7 +66,7 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
             ConfigurableServletWebServerFactory servletWebServer = (ConfigurableServletWebServerFactory) server;
             File root;
             String prefixPath = resolvePathPrefix();
-            root = new File(prefixPath + "./target/classes/static/");
+            root = new File(prefixPath + "target/classes/static/");
             if (root.exists() && root.isDirectory()) {
                 servletWebServer.setDocumentRoot(root);
             }
@@ -96,9 +95,7 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
             log.debug("Registering CORS filter");
             source.registerCorsConfiguration("/api/**", config);
             source.registerCorsConfiguration("/management/**", config);
-            source.registerCorsConfiguration("/v2/api-docs", config);
             source.registerCorsConfiguration("/v3/api-docs", config);
-            source.registerCorsConfiguration("/swagger-resources", config);
             source.registerCorsConfiguration("/swagger-ui/**", config);
         }
         return new CorsFilter(source);

@@ -7,8 +7,7 @@ import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.config.Constants;
 import com.mycompany.myapp.config.TestSecurityConfiguration;
 import com.mycompany.myapp.domain.User;
-import com.mycompany.myapp.repository.DefaultUserRepository;
-
+import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.EntityManager;
 import com.mycompany.myapp.service.dto.UserDTO;
@@ -31,7 +30,7 @@ class PublicUserResourceIT {
     private static final String DEFAULT_LOGIN = "johndoe";
 
     @Autowired
-    private DefaultUserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private EntityManager em;

@@ -158,7 +158,7 @@ public class PostResource {
      */
     @GetMapping("/posts")
     public ResponseEntity<List<Post>> getAllPosts(
-        Pageable pageable,
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable,
         @RequestParam(required = false, defaultValue = "false") boolean eagerload
     ) {
         log.debug("REST request to get a page of Posts");

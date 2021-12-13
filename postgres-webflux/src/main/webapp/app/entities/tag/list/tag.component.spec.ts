@@ -7,84 +7,82 @@ import { TagService } from '../service/tag.service';
 
 import { TagComponent } from './tag.component';
 
-describe('Component Tests', () => {
-  describe('Tag Management Component', () => {
-    let comp: TagComponent;
-    let fixture: ComponentFixture<TagComponent>;
-    let service: TagService;
+describe('Tag Management Component', () => {
+  let comp: TagComponent;
+  let fixture: ComponentFixture<TagComponent>;
+  let service: TagService;
 
-    beforeEach(() => {
-      TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
-        declarations: [TagComponent],
-      })
-        .overrideTemplate(TagComponent, '')
-        .compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      declarations: [TagComponent],
+    })
+      .overrideTemplate(TagComponent, '')
+      .compileComponents();
 
-      fixture = TestBed.createComponent(TagComponent);
-      comp = fixture.componentInstance;
-      service = TestBed.inject(TagService);
+    fixture = TestBed.createComponent(TagComponent);
+    comp = fixture.componentInstance;
+    service = TestBed.inject(TagService);
 
-      const headers = new HttpHeaders().append('link', 'link;link');
-      jest.spyOn(service, 'query').mockReturnValue(
-        of(
-          new HttpResponse({
-            body: [{ id: 123 }],
-            headers,
-          })
-        )
-      );
-    });
+    const headers = new HttpHeaders();
+    jest.spyOn(service, 'query').mockReturnValue(
+      of(
+        new HttpResponse({
+          body: [{ id: 123 }],
+          headers,
+        })
+      )
+    );
+  });
 
-    it('Should call load all on init', () => {
-      // WHEN
-      comp.ngOnInit();
+  it('Should call load all on init', () => {
+    // WHEN
+    comp.ngOnInit();
 
-      // THEN
-      expect(service.query).toHaveBeenCalled();
-      expect(comp.tags[0]).toEqual(expect.objectContaining({ id: 123 }));
-    });
+    // THEN
+    expect(service.query).toHaveBeenCalled();
+    expect(comp.tags[0]).toEqual(expect.objectContaining({ id: 123 }));
+  });
 
-    it('should load a page', () => {
-      // WHEN
-      comp.loadPage(1);
+  it('should load a page', () => {
+    // WHEN
+    comp.loadPage(1);
 
-      // THEN
-      expect(service.query).toHaveBeenCalled();
-      expect(comp.tags[0]).toEqual(expect.objectContaining({ id: 123 }));
-    });
+    // THEN
+    expect(service.query).toHaveBeenCalled();
+    expect(comp.tags[0]).toEqual(expect.objectContaining({ id: 123 }));
+  });
 
-    it('should calculate the sort attribute for an id', () => {
-      // WHEN
-      comp.ngOnInit();
+  it('should calculate the sort attribute for an id', () => {
+    // WHEN
+    comp.ngOnInit();
 
-      // THEN
-      expect(service.query).toHaveBeenCalledWith(expect.objectContaining({ sort: ['id,asc'] }));
-    });
+    // THEN
+    expect(service.query).toHaveBeenCalledWith(expect.objectContaining({ sort: ['id,asc'] }));
+  });
 
-    it('should calculate the sort attribute for a non-id attribute', () => {
-      // INIT
-      comp.ngOnInit();
+  it('should calculate the sort attribute for a non-id attribute', () => {
+    // INIT
+    comp.ngOnInit();
 
-      // GIVEN
-      comp.predicate = 'name';
+    // GIVEN
+    comp.predicate = 'name';
 
-      // WHEN
-      comp.loadPage(1);
+    // WHEN
+    comp.loadPage(1);
 
-      // THEN
-      expect(service.query).toHaveBeenLastCalledWith(expect.objectContaining({ sort: ['name,asc', 'id'] }));
-    });
+    // THEN
+    expect(service.query).toHaveBeenLastCalledWith(expect.objectContaining({ sort: ['name,asc', 'id'] }));
+  });
 
-    it('should re-initialize the page', () => {
-      // WHEN
-      comp.loadPage(1);
-      comp.reset();
+  it('should re-initialize the page', () => {
+    // WHEN
+    comp.loadPage(1);
+    comp.reset();
 
-      // THEN
-      expect(comp.page).toEqual(0);
-      expect(service.query).toHaveBeenCalledTimes(2);
-      expect(comp.tags[0]).toEqual(expect.objectContaining({ id: 123 }));
-    });
+    // THEN
+    expect(comp.page).toEqual(0);
+    expect(service.query).toHaveBeenCalledTimes(2);
+    expect(comp.tags[0]).toEqual(expect.objectContaining({ id: 123 }));
   });
 });

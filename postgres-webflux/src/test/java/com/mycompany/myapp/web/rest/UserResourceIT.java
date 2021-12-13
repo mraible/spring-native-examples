@@ -8,11 +8,8 @@ import com.mycompany.myapp.config.Constants;
 import com.mycompany.myapp.domain.Authority;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.AuthorityRepository;
-import com.mycompany.myapp.repository.DefaultUserRepository;
-
-
+import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
-
 import com.mycompany.myapp.service.EntityManager;
 import com.mycompany.myapp.service.dto.AdminUserDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
@@ -24,7 +21,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.DefaultApplicationArguments;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -53,7 +49,7 @@ class UserResourceIT {
     private static final String DEFAULT_LANGKEY = "en";
 
     @Autowired
-    private DefaultUserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private AuthorityRepository authorityRepository;
@@ -109,7 +105,7 @@ class UserResourceIT {
     /**
      * Setups the database with one user.
      */
-    public static User initTestUser(DefaultUserRepository userRepository, EntityManager em) {
+    public static User initTestUser(UserRepository userRepository, EntityManager em) {
         userRepository.deleteAllUserAuthorities().block();
         userRepository.deleteAll().block();
         User user = createEntity(em);

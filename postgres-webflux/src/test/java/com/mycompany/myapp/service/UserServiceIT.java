@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.config.Constants;
 import com.mycompany.myapp.domain.User;
-import com.mycompany.myapp.repository.DefaultUserRepository;
+import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.AdminUserDTO;
 import java.time.ZoneOffset;
@@ -44,7 +44,7 @@ class UserServiceIT {
     private static final String DEFAULT_LANGKEY = "dummy";
 
     @Autowired
-    private DefaultUserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private UserService userService;

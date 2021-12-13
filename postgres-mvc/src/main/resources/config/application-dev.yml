@@ -15,7 +15,7 @@
 
 logging:
   level:
-    ROOT: ERROR
+    ROOT: DEBUG
     tech.jhipster: DEBUG
     org.hibernate.SQL: DEBUG
     com.mycompany.myapp: DEBUG

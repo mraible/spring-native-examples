@@ -12,102 +12,100 @@ import { ITag, Tag } from '../tag.model';
 
 import { TagUpdateComponent } from './tag-update.component';
 
-describe('Component Tests', () => {
-  describe('Tag Management Update Component', () => {
-    let comp: TagUpdateComponent;
-    let fixture: ComponentFixture<TagUpdateComponent>;
-    let activatedRoute: ActivatedRoute;
-    let tagService: TagService;
+describe('Tag Management Update Component', () => {
+  let comp: TagUpdateComponent;
+  let fixture: ComponentFixture<TagUpdateComponent>;
+  let activatedRoute: ActivatedRoute;
+  let tagService: TagService;
 
-    beforeEach(() => {
-      TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
-        declarations: [TagUpdateComponent],
-        providers: [FormBuilder, ActivatedRoute],
-      })
-        .overrideTemplate(TagUpdateComponent, '')
-        .compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      declarations: [TagUpdateComponent],
+      providers: [FormBuilder, ActivatedRoute],
+    })
+      .overrideTemplate(TagUpdateComponent, '')
+      .compileComponents();
 
-      fixture = TestBed.createComponent(TagUpdateComponent);
-      activatedRoute = TestBed.inject(ActivatedRoute);
-      tagService = TestBed.inject(TagService);
+    fixture = TestBed.createComponent(TagUpdateComponent);
+    activatedRoute = TestBed.inject(ActivatedRoute);
+    tagService = TestBed.inject(TagService);
 
-      comp = fixture.componentInstance;
+    comp = fixture.componentInstance;
+  });
+
+  describe('ngOnInit', () => {
+    it('Should update editForm', () => {
+      const tag: ITag = { id: 456 };
+
+      activatedRoute.data = of({ tag });
+      comp.ngOnInit();
+
+      expect(comp.editForm.value).toEqual(expect.objectContaining(tag));
+    });
+  });
+
+  describe('save', () => {
+    it('Should call update service on save for existing entity', () => {
+      // GIVEN
+      const saveSubject = new Subject<HttpResponse<Tag>>();
+      const tag = { id: 123 };
+      jest.spyOn(tagService, 'update').mockReturnValue(saveSubject);
+      jest.spyOn(comp, 'previousState');
+      activatedRoute.data = of({ tag });
+      comp.ngOnInit();
+
+      // WHEN
+      comp.save();
+      expect(comp.isSaving).toEqual(true);
+      saveSubject.next(new HttpResponse({ body: tag }));
+      saveSubject.complete();
+
+      // THEN
+      expect(comp.previousState).toHaveBeenCalled();
+      expect(tagService.update).toHaveBeenCalledWith(tag);
+      expect(comp.isSaving).toEqual(false);
     });
 
-    describe('ngOnInit', () => {
-      it('Should update editForm', () => {
-        const tag: ITag = { id: 456 };
+    it('Should call create service on save for new entity', () => {
+      // GIVEN
+      const saveSubject = new Subject<HttpResponse<Tag>>();
+      const tag = new Tag();
+      jest.spyOn(tagService, 'create').mockReturnValue(saveSubject);
+      jest.spyOn(comp, 'previousState');
+      activatedRoute.data = of({ tag });
+      comp.ngOnInit();
 
-        activatedRoute.data = of({ tag });
-        comp.ngOnInit();
+      // WHEN
+      comp.save();
+      expect(comp.isSaving).toEqual(true);
+      saveSubject.next(new HttpResponse({ body: tag }));
+      saveSubject.complete();
 
-        expect(comp.editForm.value).toEqual(expect.objectContaining(tag));
-      });
+      // THEN
+      expect(tagService.create).toHaveBeenCalledWith(tag);
+      expect(comp.isSaving).toEqual(false);
+      expect(comp.previousState).toHaveBeenCalled();
     });
 
-    describe('save', () => {
-      it('Should call update service on save for existing entity', () => {
-        // GIVEN
-        const saveSubject = new Subject<HttpResponse<Tag>>();
-        const tag = { id: 123 };
-        jest.spyOn(tagService, 'update').mockReturnValue(saveSubject);
-        jest.spyOn(comp, 'previousState');
-        activatedRoute.data = of({ tag });
-        comp.ngOnInit();
+    it('Should set isSaving to false on error', () => {
+      // GIVEN
+      const saveSubject = new Subject<HttpResponse<Tag>>();
+      const tag = { id: 123 };
+      jest.spyOn(tagService, 'update').mockReturnValue(saveSubject);
+      jest.spyOn(comp, 'previousState');
+      activatedRoute.data = of({ tag });
+      comp.ngOnInit();
 
-        // WHEN
-        comp.save();
-        expect(comp.isSaving).toEqual(true);
-        saveSubject.next(new HttpResponse({ body: tag }));
-        saveSubject.complete();
+      // WHEN
+      comp.save();
+      expect(comp.isSaving).toEqual(true);
+      saveSubject.error('This is an error!');
 
-        // THEN
-        expect(comp.previousState).toHaveBeenCalled();
-        expect(tagService.update).toHaveBeenCalledWith(tag);
-        expect(comp.isSaving).toEqual(false);
-      });
-
-      it('Should call create service on save for new entity', () => {
-        // GIVEN
-        const saveSubject = new Subject<HttpResponse<Tag>>();
-        const tag = new Tag();
-        jest.spyOn(tagService, 'create').mockReturnValue(saveSubject);
-        jest.spyOn(comp, 'previousState');
-        activatedRoute.data = of({ tag });
-        comp.ngOnInit();
-
-        // WHEN
-        comp.save();
-        expect(comp.isSaving).toEqual(true);
-        saveSubject.next(new HttpResponse({ body: tag }));
-        saveSubject.complete();
-
-        // THEN
-        expect(tagService.create).toHaveBeenCalledWith(tag);
-        expect(comp.isSaving).toEqual(false);
-        expect(comp.previousState).toHaveBeenCalled();
-      });
-
-      it('Should set isSaving to false on error', () => {
-        // GIVEN
-        const saveSubject = new Subject<HttpResponse<Tag>>();
-        const tag = { id: 123 };
-        jest.spyOn(tagService, 'update').mockReturnValue(saveSubject);
-        jest.spyOn(comp, 'previousState');
-        activatedRoute.data = of({ tag });
-        comp.ngOnInit();
-
-        // WHEN
-        comp.save();
-        expect(comp.isSaving).toEqual(true);
-        saveSubject.error('This is an error!');
-
-        // THEN
-        expect(tagService.update).toHaveBeenCalledWith(tag);
-        expect(comp.isSaving).toEqual(false);
-        expect(comp.previousState).not.toHaveBeenCalled();
-      });
+      // THEN
+      expect(tagService.update).toHaveBeenCalledWith(tag);
+      expect(comp.isSaving).toEqual(false);
+      expect(comp.previousState).not.toHaveBeenCalled();
     });
   });
 });

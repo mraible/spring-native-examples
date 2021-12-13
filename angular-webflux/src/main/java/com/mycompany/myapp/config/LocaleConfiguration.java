@@ -1,9 +1,14 @@
 package com.mycompany.myapp.config;
 
+import java.time.Duration;
+import java.util.Locale;
+import java.util.TimeZone;
+import javax.annotation.Nonnull;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.i18n.SimpleLocaleContext;
@@ -17,13 +22,7 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.i18n.LocaleContextResolver;
 
-import javax.annotation.Nonnull;
-import java.time.Duration;
-import java.util.Locale;
-import java.util.TimeZone;
-
 @Configuration
-//@Import(WebFluxAutoConfiguration.class)
 public class LocaleConfiguration {
 
     @Bean(name = "localeContextResolver")
@@ -155,9 +154,9 @@ public class LocaleConfiguration {
                         );
                     }
                 }
-                exchange
-                    .getAttributes()
-                    .put(LOCALE_REQUEST_ATTRIBUTE_NAME, locale != null ? locale : exchange.getLocaleContext().getLocale());
+                if (locale != null) {
+                    exchange.getAttributes().put(LOCALE_REQUEST_ATTRIBUTE_NAME, locale);
+                }
                 if (timeZone != null) {
                     exchange.getAttributes().put(TIME_ZONE_REQUEST_ATTRIBUTE_NAME, timeZone);
                 } else {

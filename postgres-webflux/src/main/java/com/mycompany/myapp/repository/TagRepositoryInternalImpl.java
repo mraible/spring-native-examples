@@ -1,10 +1,19 @@
 package com.mycompany.myapp.repository;
 
+import static org.springframework.data.relational.core.query.Criteria.where;
+import static org.springframework.data.relational.core.query.Query.query;
+
 import com.mycompany.myapp.domain.Tag;
 import com.mycompany.myapp.repository.rowmapper.TagRowMapper;
 import com.mycompany.myapp.service.EntityManager;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.function.BiFunction;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Criteria;
@@ -15,42 +24,36 @@ import org.springframework.data.relational.core.sql.SelectBuilder.SelectFromAndJ
 import org.springframework.data.relational.core.sql.Table;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.RowsFetchSpec;
-import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.springframework.data.relational.core.query.Criteria.where;
 
 /**
  * Spring Data SQL reactive custom repository implementation for the Tag entity.
  */
-@Repository
-public class DefaultTagRepository {
+@SuppressWarnings("unused")
+class TagRepositoryInternalImpl implements TagRepositoryInternal {
 
     private final DatabaseClient db;
     private final R2dbcEntityTemplate r2dbcEntityTemplate;
     private final EntityManager entityManager;
+
     private final TagRowMapper tagMapper;
-    private final TagRepository repository;
 
     private static final Table entityTable = Table.aliased("tag", EntityManager.ENTITY_ALIAS);
 
-    public DefaultTagRepository(TagRepository repository, R2dbcEntityTemplate template, EntityManager entityManager, TagRowMapper tagMapper) {
-        this.repository = repository;
+    public TagRepositoryInternalImpl(R2dbcEntityTemplate template, EntityManager entityManager, TagRowMapper tagMapper) {
         this.db = template.getDatabaseClient();
         this.r2dbcEntityTemplate = template;
         this.entityManager = entityManager;
         this.tagMapper = tagMapper;
     }
 
+    @Override
     public Flux<Tag> findAllBy(Pageable pageable) {
         return findAllBy(pageable, null);
     }
 
+    @Override
     public Flux<Tag> findAllBy(Pageable pageable, Criteria criteria) {
         return createQuery(pageable, criteria).all();
     }
@@ -77,10 +80,12 @@ public class DefaultTagRepository {
         return db.sql(selectWhere).map(this::process);
     }
 
+    @Override
     public Flux<Tag> findAll() {
         return findAllBy(null, null);
     }
 
+    @Override
     public Mono<Tag> findById(Long id) {
         return createQuery(null, where("id").is(id)).one();
     }
@@ -90,10 +95,12 @@ public class DefaultTagRepository {
         return entity;
     }
 
+    @Override
     public <S extends Tag> Mono<S> insert(S entity) {
         return entityManager.insert(entity);
     }
 
+    @Override
     public <S extends Tag> Mono<S> save(S entity) {
         if (entity.getId() == null) {
             return insert(entity);
@@ -108,31 +115,9 @@ public class DefaultTagRepository {
         }
     }
 
+    @Override
     public Mono<Integer> update(Tag entity) {
         //fixme is this the proper way?
         return r2dbcEntityTemplate.update(entity).thenReturn(1);
-    }
-
-    public Mono<Boolean> existsById(Long id) {
-        return repository.existsById(id);
-    }
-
-    public Mono<Long> count() {
-        return repository.count();
-    }
-
-    public Mono<Void> deleteById(Long id) {
-        return repository.deleteById(id);
-    }
-}
-
-class TagSqlHelper {
-
-    static List<Expression> getColumns(Table table, String columnPrefix) {
-        List<Expression> columns = new ArrayList<>();
-        columns.add(Column.aliased("id", table, columnPrefix + "_id"));
-        columns.add(Column.aliased("name", table, columnPrefix + "_name"));
-
-        return columns;
     }
 }

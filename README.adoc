@@ -34,32 +34,7 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
 ...
 
 <repackage.classifier/>
-<spring-native.version>0.10.4</spring-native.version>
-...
-
-<!-- Comment out devtools -->
-<!--dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-devtools</artifactId>
-    <optional>true</optional>
-</dependency-->
-
-<!-- If reactive, add the following to fix NoClassDefFoundError: org/springframework/web/servlet/config/annotation/WebMvcConfigurer -->
-<!-- Answer from https://stackoverflow.com/a/67426209/65681 -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
-    <exclusions>
-        <exclusion>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-        </exclusion>
-    </exclusions>
-</dependency>
-...
-
-<!-- Springfox doesn't have support for Spring Native yet, so comment out Springfox dependencies -->
-<!-- https://github.com/springfox/springfox/issues/3816 -->
+<spring-native.version>0.11.0</spring-native.version>
 ...
 
 <!-- If reactive, comment out boringssl. This allows Spring Native to build the image and gets around this error:
@@ -117,13 +92,12 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
     <id>native</id>
     <properties>
         <repackage.classifier>exec</repackage.classifier>
-        <native-buildtools.version>0.9.3</native-buildtools.version>
+        <native-buildtools.version>0.9.8</native-buildtools.version>
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.graalvm.buildtools</groupId>
-            <artifactId>junit-platform-native</artifactId>
-            <version>${native-buildtools.version}</version>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -133,6 +107,7 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
                 <version>${native-buildtools.version}</version>
+                <extensions>true</extensions>
                 <executions>
                     <execution>
                         <id>test-native</id>
@@ -155,8 +130,6 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
 </profile>
 ----
 
-. Remove the `127.0.0.1` prefix from `keycloak.yml`
-
 . Delete `spring-logback.xml` and tone down logging
 +
 [source,yaml]
@@ -166,33 +139,26 @@ logging:
     root: ERROR
 ----
 
-. If reactive, update `LocaleConfiguration.java` to remove `@Import(WebFluxAutoConfiguration.class)`
-
-. Update main `App.java` to add hints (first four of each list only required for reactive)
+. Update main `App.java` to add hints
 +
 [source,java]
 ----
-@NativeHint(options = "--enable-url-protocols=http,https")
 @TypeHint(
     types = {
-        ReactiveOAuth2AuthorizedClientManager.class,
-        ReactiveOAuth2AuthorizedClientProviderBuilder.class,
-        DefaultReactiveOAuth2AuthorizedClientManager.class,
-        AbstractWebClientReactiveOAuth2AccessTokenResponseClient.class,
-        liquibase.configuration.LiquibaseConfiguration.class,
-        com.zaxxer.hikari.HikariDataSource.class,
-        liquibase.change.core.LoadDataColumnConfig.class,
         org.HdrHistogram.Histogram.class,
-        org.HdrHistogram.ConcurrentHistogram.class,
-    },
-    typeNames = {
-        "org.springframework.web.reactive.function.client.DefaultWebClientBuilder",
-        "reactor.core.publisher.Traces$StackWalkerCallSiteSupplierFactory",
-        "reactor.core.publisher.Traces$SharedSecretsCallSiteSupplierFactory",
-        "reactor.core.publisher.Traces$ExceptionCallSiteSupplierFactory",
-        "com.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry[]"
-    },
-    access = AccessBits.ALL)
+        org.HdrHistogram.ConcurrentHistogram.class
+    }
+----
+
+. Add springdocs native dependency (after https://github.com/springdoc/springdoc-openapi[cloning] and installing locally):
++
+[source,xml]
+----
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-native</artifactId>
+    <version>1.5.14-SNAPSHOT</version>
+</dependency>
 ----
 
 . Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet], but you can make it work by adding files from https://github.com/liquibase/liquibase/pull/2005[this pull request] to your `src/main/resources/META-INF/native-image/liquibase` directory
@@ -218,6 +184,4 @@ logging:
 
 == Known Issues
 
-- Springfox (Swagger) doesn't work
-- Metrics don't work
-- Repositories need refactoring for R2DBC
+- https://github.com/spring-projects-experimental/spring-native/issues/1365[`Code should not be empty`] happens with Spring MVC

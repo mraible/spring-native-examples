@@ -2,7 +2,7 @@
   "generator-jhipster": {
     "applicationType": "monolith",
     "baseName": "jhipster",
-    "jhipsterVersion": "7.2.0",
+    "jhipsterVersion": "7.4.1",
     "skipClient": true,
     "skipServer": false,
     "skipUserManagement": true,
@@ -41,6 +41,9 @@
     "clientThemeVariant": "",
     "withAdminUi": true,
     "enableGradleEnterprise": false,
-    "languages": ["en", "fr"]
+    "languages": ["en", "fr"],
+    "monorepository": true,
+    "skipCommitHook": true,
+    "entities": []
   }
 }

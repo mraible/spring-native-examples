@@ -23,6 +23,7 @@ spring:
     host: localhost
   main:
     allow-bean-definition-overriding: true
+    allow-circular-references: true
   messages:
     basename: i18n/messages
   task:

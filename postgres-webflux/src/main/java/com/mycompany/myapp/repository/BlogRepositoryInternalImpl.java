@@ -25,20 +25,18 @@ import org.springframework.data.relational.core.sql.SelectBuilder.SelectFromAndJ
 import org.springframework.data.relational.core.sql.Table;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.RowsFetchSpec;
-import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
  * Spring Data SQL reactive custom repository implementation for the Blog entity.
  */
-@Repository
-public class DefaultBlogRepository {
+@SuppressWarnings("unused")
+class BlogRepositoryInternalImpl implements BlogRepositoryInternal {
 
     private final DatabaseClient db;
     private final R2dbcEntityTemplate r2dbcEntityTemplate;
     private final EntityManager entityManager;
-    private final BlogRepository repository;
 
     private final UserRowMapper userMapper;
     private final BlogRowMapper blogMapper;
@@ -46,14 +44,12 @@ public class DefaultBlogRepository {
     private static final Table entityTable = Table.aliased("blog", EntityManager.ENTITY_ALIAS);
     private static final Table userTable = Table.aliased("jhi_user", "e_user");
 
-    public DefaultBlogRepository(
-        BlogRepository repository,
+    public BlogRepositoryInternalImpl(
         R2dbcEntityTemplate template,
         EntityManager entityManager,
         UserRowMapper userMapper,
         BlogRowMapper blogMapper
     ) {
-        this.repository = repository;
         this.db = template.getDatabaseClient();
         this.r2dbcEntityTemplate = template;
         this.entityManager = entityManager;
@@ -61,10 +57,12 @@ public class DefaultBlogRepository {
         this.blogMapper = blogMapper;
     }
 
+    @Override
     public Flux<Blog> findAllBy(Pageable pageable) {
         return findAllBy(pageable, null);
     }
 
+    @Override
     public Flux<Blog> findAllBy(Pageable pageable, Criteria criteria) {
         return createQuery(pageable, criteria).all();
     }
@@ -98,10 +96,12 @@ public class DefaultBlogRepository {
         return db.sql(selectWhere).map(this::process);
     }
 
+    @Override
     public Flux<Blog> findAll() {
-        return repository.findAll();
+        return findAllBy(null, null);
     }
 
+    @Override
     public Mono<Blog> findById(Long id) {
         return createQuery(null, where("id").is(id)).one();
     }
@@ -112,10 +112,12 @@ public class DefaultBlogRepository {
         return entity;
     }
 
+    @Override
     public <S extends Blog> Mono<S> insert(S entity) {
         return entityManager.insert(entity);
     }
 
+    @Override
     public <S extends Blog> Mono<S> save(S entity) {
         if (entity.getId() == null) {
             return insert(entity);
@@ -130,29 +132,9 @@ public class DefaultBlogRepository {
         }
     }
 
+    @Override
     public Mono<Integer> update(Blog entity) {
         //fixme is this the proper way?
         return r2dbcEntityTemplate.update(entity).thenReturn(1);
-    }
-
-    public Mono<Boolean> existsById(Long id) {
-        return repository.existsById(id);
-    }
-
-    public Mono<Void> deleteById(Long id) {
-        return repository.deleteById(id);
-    }
-}
-
-class BlogSqlHelper {
-
-    static List<Expression> getColumns(Table table, String columnPrefix) {
-        List<Expression> columns = new ArrayList<>();
-        columns.add(Column.aliased("id", table, columnPrefix + "_id"));
-        columns.add(Column.aliased("name", table, columnPrefix + "_name"));
-        columns.add(Column.aliased("handle", table, columnPrefix + "_handle"));
-
-        columns.add(Column.aliased("user_id", table, columnPrefix + "_user_id"));
-        return columns;
     }
 }
