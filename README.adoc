@@ -175,10 +175,7 @@ logging:
 
 . If using Spring WebFlux, refactor repositories and add `@AotProxyHint` for each one
 
-. If using Spring MVC, swap Undertow dependencies for Tomcat, modify `WebConfigurer` to comment out `setLocationForStaticAssets(server)`, and add additional type hints for the following classes:
-
-- `tech.jhipster.domain.util.FixedPostgreSQL10Dialect.class`
-- `org.hibernate.type.TextType.class`
+. If using Spring MVC, swap Undertow dependencies for Tomcat.
 
 . Build with  `./mvnw package -Pnative,prod -DskipTests`
 
