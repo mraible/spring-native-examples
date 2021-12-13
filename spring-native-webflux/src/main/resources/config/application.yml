@@ -27,6 +27,8 @@ springdoc:
 logging:
   level:
     root: ERROR
+    io.netty: ERROR
+    org.springframework: INFO
 management:
   endpoints:
     web:

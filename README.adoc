@@ -10,6 +10,15 @@ This repository contains five apps we (https://github.com/joshlong[@joshlong] an
 
 You should be able to create a JHipster monolith with OIDC, then make the following changes.
 
+[NOTE]
+====
+H2 won't work because of the following error:
+
+----
+java.lang.IllegalStateException: Failed to process lifecycle methods on bean definition with name 'h2TCPServer'
+----
+====
+
 . Modify `pom.xml` to add native, adjust dependencies, and disable devtools:
 +
 [source,xml]
@@ -137,27 +146,31 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
 logging:
   level:
     root: ERROR
+    io.netty: ERROR
+    org.springframework: INFO
 ----
 
 . Update main `App.java` to add hints
 +
 [source,java]
 ----
+import org.springframework.nativex.hint.TypeHint;
+
 @TypeHint(
     types = {
         org.HdrHistogram.Histogram.class,
         org.HdrHistogram.ConcurrentHistogram.class
-    }
+    })
 ----
 
-. Add springdocs native dependency (after https://github.com/springdoc/springdoc-openapi[cloning] and installing locally):
+. Add springdocs native dependency:
 +
 [source,xml]
 ----
 <dependency>
     <groupId>org.springdoc</groupId>
     <artifactId>springdoc-openapi-native</artifactId>
-    <version>1.5.14-SNAPSHOT</version>
+    <version>1.6.0</version>
 </dependency>
 ----
 
