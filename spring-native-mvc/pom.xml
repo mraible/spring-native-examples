@@ -132,6 +132,11 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-webmvc-core</artifactId>
         </dependency>
+        <!--dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-native</artifactId>
+            <version>1.6.0</version>
+        </dependency-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>

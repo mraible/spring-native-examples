@@ -10,15 +10,6 @@ This repository contains five apps we (https://github.com/joshlong[@joshlong] an
 
 You should be able to create a JHipster monolith with OIDC, then make the following changes.
 
-[NOTE]
-====
-H2 won't work because of the following error:
-
-----
-java.lang.IllegalStateException: Failed to process lifecycle methods on bean definition with name 'h2TCPServer'
-----
-====
-
 . Modify `pom.xml` to add native, adjust dependencies, and disable devtools:
 +
 [source,xml]
@@ -139,6 +130,38 @@ java.lang.IllegalStateException: Failed to process lifecycle methods on bean def
 </profile>
 ----
 
+. If you're using Spring MVC, exclude Mockito from `spring-boot-starter-test`:
++
+[source,xml]
+----
+<exclusion>
+    <groupId>org.mockito</groupId>
+    <artifactId>*</artifactId>
+</exclusion>
+----
++
+And delete any tests that import Mockito. https://github.com/spring-projects-experimental/spring-native/issues/1343[Mockito isn't supported yet].
++
+[source,shell]
+----
+rm src/test/java/com/mycompany/myapp/config/TestSecurityConfiguration.java
+rm src/test/java/com/mycompany/myapp/web/rest/PostResourceIT.java
+rm src/test/java/com/mycompany/myapp/config/WebConfigurerTest.java
+rm src/test/java/com/mycompany/myapp/security/oauth2/CustomClaimConverterIT.java
+rm src/test/java/com/mycompany/myapp/config/StaticResourcesWebConfigurerTest.java
+rm src/test/java/com/mycompany/myapp/security/oauth2/AudienceValidatorTest.java
+rm src/test/java/com/mycompany/myapp/IntegrationTest.java
+rm src/test/java/com/mycompany/myapp/web/rest/PublicUserResourceIT.java
+rm src/test/java/com/mycompany/myapp/config/timezone/HibernateTimeZoneIT.java
+rm src/test/java/com/mycompany/myapp/web/rest/LogoutResourceIT.java
+rm src/test/java/com/mycompany/myapp/web/rest/TagResourceIT.java
+rm src/test/java/com/mycompany/myapp/web/rest/AccountResourceIT.java
+rm src/test/java/com/mycompany/myapp/web/rest/errors/ExceptionTranslatorIT.java
+rm src/test/java/com/mycompany/myapp/service/UserServiceIT.java
+rm src/test/java/com/mycompany/myapp/web/rest/UserResourceIT.java
+rm src/test/java/com/mycompany/myapp/web/rest/BlogResourceIT.java
+----
+
 . Delete `spring-logback.xml` and tone down logging
 +
 [source,yaml]
@@ -150,7 +173,9 @@ logging:
     org.springframework: INFO
 ----
 
-. Update main `App.java` to add hints
+. If using Spring MVC, swap Undertow dependencies for Tomcat, modify `WebConfigurer` to comment out `setLocationForStaticAssets(server)`.
+
+. Update main `App.java` to add hints for Micrometer
 +
 [source,java]
 ----
@@ -174,7 +199,26 @@ import org.springframework.nativex.hint.TypeHint;
 </dependency>
 ----
 
-. Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet], but you can make it work by adding files from https://github.com/liquibase/liquibase/pull/2005[this pull request] to your `src/main/resources/META-INF/native-image/liquibase` directory
+. Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet], but you can make it work by adding files from https://github.com/liquibase/liquibase/pull/2005[this pull request] to your `src/main/resources/META-INF/native-image/liquibase` directory.
+
+. Add type hints for Liquibase and related classes.
++
+[source,java]
+----
+@TypeHint(
+    types = {
+        ...
+        liquibase.configuration.LiquibaseConfiguration.class,
+        com.zaxxer.hikari.HikariDataSource.class,
+        liquibase.change.core.LoadDataColumnConfig.class,
+        tech.jhipster.domain.util.FixedPostgreSQL10Dialect.class,
+        org.hibernate.type.TextType.class
+    })
+----
+
+. If Spring WebFlux, remove `@Component` from `SpaWebFilter`
+
+. If using Spring WebFlux, refactor repositories and add `@AotProxyHint` for each one
 
 . Add an `@AotProxyHint` for each Resource classes
 +
@@ -186,12 +230,15 @@ import org.springframework.nativex.hint.TypeHint;
 @AotProxyHint(targetClass = TagResource.class, proxyFeatures = ProxyBits.IS_STATIC)
 ----
 
-. If using Spring WebFlux, refactor repositories and add `@AotProxyHint` for each one
-
-. If using Spring MVC, swap Undertow dependencies for Tomcat.
-
 . Build with  `./mvnw package -Pnative,prod -DskipTests`
 
 == Known Issues
 
-- https://github.com/spring-projects-experimental/spring-native/issues/1365[`Code should not be empty`] happens with Spring MVC
+- https://github.com/spring-projects-experimental/spring-native/issues/1365[`Code should not be empty`] happens with Spring MVC. Removing Mockito and tests fixes it.
+- Metrics don't work
+- H2 doesn't work
++
+----
+java.lang.IllegalStateException: Failed to process lifecycle methods on bean definition with name 'h2TCPServer'
+----
++ It might be possible to fix with a `@TypeHint` for `org.h2.tools.Server.class`. However, this class is not in the classpath by default.
