@@ -3,8 +3,8 @@ package com.mycompany.myapp.repository;
 import com.mycompany.myapp.domain.Blog;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.relational.core.query.Criteria;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -13,7 +13,8 @@ import reactor.core.publisher.Mono;
  * Spring Data SQL reactive repository for the Blog entity.
  */
 @SuppressWarnings("unused")
-interface BlogRepository extends R2dbcRepository<Blog, Long> {
+@Repository
+public interface BlogRepository extends ReactiveCrudRepository<Blog, Long>, BlogRepositoryInternal {
     @Query("SELECT * FROM blog entity WHERE entity.user_id = :id")
     Flux<Blog> findByUser(Long id);
 
@@ -29,4 +30,10 @@ interface BlogRepository extends R2dbcRepository<Blog, Long> {
 
     @Override
     <S extends Blog> Mono<S> save(S entity);
+}
+
+interface BlogRepositoryInternal {
+    <S extends Blog> Mono<S> save(S entity);
+    Flux<Blog> findAllBy(Pageable pageable);
+    Flux<Blog> findAllBy(Pageable pageable, Criteria criteria);
 }

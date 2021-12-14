@@ -1,10 +1,6 @@
 package com.mycompany.myapp;
 
 import com.mycompany.myapp.config.ApplicationProperties;
-import com.mycompany.myapp.web.rest.BlogResource;
-import com.mycompany.myapp.web.rest.PostResource;
-import com.mycompany.myapp.web.rest.TagResource;
-import com.mycompany.myapp.web.rest.UserResource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.env.Environment;
-import org.springframework.nativex.hint.AotProxyHint;
-import org.springframework.nativex.hint.NativeHint;
-import org.springframework.nativex.hint.ProxyBits;
+import org.springframework.nativex.hint.JdkProxyHint;
 import org.springframework.nativex.hint.TypeHint;
 import tech.jhipster.config.DefaultProfileUtil;
 import tech.jhipster.config.JHipsterConstants;
@@ -27,20 +21,24 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
-@AotProxyHint(targetClass = UserResource.class, proxyFeatures = ProxyBits.IS_STATIC)
-@AotProxyHint(targetClass = BlogResource.class, proxyFeatures = ProxyBits.IS_STATIC)
-@AotProxyHint(targetClass = PostResource.class, proxyFeatures = ProxyBits.IS_STATIC)
-@AotProxyHint(targetClass = TagResource.class, proxyFeatures = ProxyBits.IS_STATIC)
-@NativeHint(options = "--enable-url-protocols=http,https")
-@TypeHint(types = {
-    liquibase.configuration.LiquibaseConfiguration.class,
-    liquibase.change.core.LoadDataColumnConfig.class,
-    com.zaxxer.hikari.HikariDataSource.class,
-    tech.jhipster.domain.util.FixedPostgreSQL10Dialect.class,
-    org.hibernate.type.TextType.class,
-    org.HdrHistogram.Histogram.class,
-    org.HdrHistogram.ConcurrentHistogram.class,
-}, typeNames = "com.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry[]")
+@TypeHint(
+    types = {
+        org.HdrHistogram.Histogram.class,
+        org.HdrHistogram.ConcurrentHistogram.class,
+        liquibase.configuration.LiquibaseConfiguration.class,
+        com.zaxxer.hikari.HikariDataSource.class,
+        liquibase.change.core.LoadDataColumnConfig.class,
+        tech.jhipster.domain.util.FixedPostgreSQL10Dialect.class,
+        org.hibernate.type.TextType.class,
+        org.springframework.security.oauth2.jwt.JwtDecoder.class
+    })
+@JdkProxyHint(
+    types = {
+        org.springframework.data.jpa.repository.support.CrudMethodMetadata.class,
+        org.springframework.aop.SpringProxy.class,
+        org.springframework.aop.framework.Advised.class,
+        org.springframework.core.DecoratingProxy.class
+    })
 @SpringBootApplication
 @EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class})
 public class PostgresMvcApp {

@@ -2,7 +2,7 @@
 version: '3.8'
 services:
   keycloak:
-    image: jboss/keycloak:14.0.0
+    image: jboss/keycloak:15.0.2
     command:
       [
         '-b',
@@ -23,6 +23,6 @@ services:
     # If you want to expose these ports outside your dev PC,
     # remove the "127.0.0.1:" prefix
     ports:
-      - 9080:9080
-      - 9443:9443
-      - 10990:10990
+      - 127.0.0.1:9080:9080
+      - 127.0.0.1:9443:9443
+      - 127.0.0.1:10990:10990

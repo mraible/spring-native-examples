@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 /**
  * Spring Data JPA repository for the {@link User} entity.
  */
+@Repository
 public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findOneByLogin(String login);
 

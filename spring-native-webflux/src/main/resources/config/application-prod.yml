@@ -15,7 +15,7 @@
 
 logging:
   level:
-    ROOT: ERROR 
+    ROOT: INFO
     tech.jhipster: INFO
     com.mycompany.myapp: INFO
 
@@ -67,7 +67,7 @@ server:
   shutdown: graceful # see https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-graceful-shutdown
   compression:
     enabled: true
-    mime-types: text/html,text/xml,text/plain,text/css, application/javascript, application/json
+    mime-types: text/html,text/xml,text/plain,text/css,application/javascript,application/json,image/svg+xml
     min-response-size: 1024
 
 # ===================================================================

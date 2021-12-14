@@ -2,7 +2,7 @@
   "generator-jhipster": {
     "applicationType": "monolith",
     "baseName": "Postgres",
-    "jhipsterVersion": "7.2.0",
+    "jhipsterVersion": "7.4.1",
     "skipClient": false,
     "skipServer": false,
     "skipUserManagement": true,

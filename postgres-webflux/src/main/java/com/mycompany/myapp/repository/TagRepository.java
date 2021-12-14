@@ -2,7 +2,9 @@ package com.mycompany.myapp.repository;
 
 import com.mycompany.myapp.domain.Tag;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.relational.core.query.Criteria;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -11,7 +13,8 @@ import reactor.core.publisher.Mono;
  * Spring Data SQL reactive repository for the Tag entity.
  */
 @SuppressWarnings("unused")
-public interface TagRepository extends R2dbcRepository<Tag, Long> {
+@Repository
+public interface TagRepository extends ReactiveCrudRepository<Tag, Long>, TagRepositoryInternal {
     Flux<Tag> findAllBy(Pageable pageable);
 
     // just to avoid having unambigous methods
@@ -23,4 +26,10 @@ public interface TagRepository extends R2dbcRepository<Tag, Long> {
 
     @Override
     <S extends Tag> Mono<S> save(S entity);
+}
+
+interface TagRepositoryInternal {
+    <S extends Tag> Mono<S> save(S entity);
+    Flux<Tag> findAllBy(Pageable pageable);
+    Flux<Tag> findAllBy(Pageable pageable, Criteria criteria);
 }

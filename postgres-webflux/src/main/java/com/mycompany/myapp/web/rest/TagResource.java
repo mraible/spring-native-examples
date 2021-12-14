@@ -1,7 +1,6 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Tag;
-import com.mycompany.myapp.repository.DefaultTagRepository;
 import com.mycompany.myapp.repository.TagRepository;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -48,9 +47,9 @@ public class TagResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final DefaultTagRepository tagRepository;
+    private final TagRepository tagRepository;
 
-    public TagResource(DefaultTagRepository tagRepository) {
+    public TagResource(TagRepository tagRepository) {
         this.tagRepository = tagRepository;
     }
 
@@ -182,7 +181,10 @@ public class TagResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of tags in body.
      */
     @GetMapping("/tags")
-    public Mono<ResponseEntity<List<Tag>>> getAllTags(Pageable pageable, ServerHttpRequest request) {
+    public Mono<ResponseEntity<List<Tag>>> getAllTags(
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable,
+        ServerHttpRequest request
+    ) {
         log.debug("REST request to get a page of Tags");
         return tagRepository
             .count()

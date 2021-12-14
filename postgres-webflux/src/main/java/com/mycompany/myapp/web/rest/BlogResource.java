@@ -1,12 +1,13 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Blog;
-import com.mycompany.myapp.repository.DefaultBlogRepository;
+import com.mycompany.myapp.repository.BlogRepository;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -38,9 +39,9 @@ public class BlogResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final DefaultBlogRepository blogRepository;
+    private final BlogRepository blogRepository;
 
-    public BlogResource(DefaultBlogRepository blogRepository) {
+    public BlogResource(BlogRepository blogRepository) {
         this.blogRepository = blogRepository;
     }
 

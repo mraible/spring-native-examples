@@ -34,32 +34,7 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
 ...
 
 <repackage.classifier/>
-<spring-native.version>0.10.4</spring-native.version>
-...
-
-<!-- Comment out devtools -->
-<!--dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-devtools</artifactId>
-    <optional>true</optional>
-</dependency-->
-
-<!-- If reactive, add the following to fix NoClassDefFoundError: org/springframework/web/servlet/config/annotation/WebMvcConfigurer -->
-<!-- Answer from https://stackoverflow.com/a/67426209/65681 -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
-    <exclusions>
-        <exclusion>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-        </exclusion>
-    </exclusions>
-</dependency>
-...
-
-<!-- Springfox doesn't have support for Spring Native yet, so comment out Springfox dependencies -->
-<!-- https://github.com/springfox/springfox/issues/3816 -->
+<spring-native.version>0.11.0</spring-native.version>
 ...
 
 <!-- If reactive, comment out boringssl. This allows Spring Native to build the image and gets around this error:
@@ -117,13 +92,12 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
     <id>native</id>
     <properties>
         <repackage.classifier>exec</repackage.classifier>
-        <native-buildtools.version>0.9.3</native-buildtools.version>
+        <native-buildtools.version>0.9.8</native-buildtools.version>
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.graalvm.buildtools</groupId>
-            <artifactId>junit-platform-native</artifactId>
-            <version>${native-buildtools.version}</version>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -133,6 +107,7 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
                 <version>${native-buildtools.version}</version>
+                <extensions>true</extensions>
                 <executions>
                     <execution>
                         <id>test-native</id>
@@ -155,7 +130,37 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
 </profile>
 ----
 
-. Remove the `127.0.0.1` prefix from `keycloak.yml`
+. If you're using Spring MVC, exclude Mockito from `spring-boot-starter-test`:
++
+[source,xml]
+----
+<exclusion>
+    <groupId>org.mockito</groupId>
+    <artifactId>*</artifactId>
+</exclusion>
+----
++
+And delete any tests that import Mockito. https://github.com/spring-projects-experimental/spring-native/issues/1343[Mockito isn't supported yet].
++
+[source,shell]
+----
+rm src/test/java/com/mycompany/myapp/config/TestSecurityConfiguration.java
+rm src/test/java/com/mycompany/myapp/web/rest/PostResourceIT.java
+rm src/test/java/com/mycompany/myapp/config/WebConfigurerTest.java
+rm src/test/java/com/mycompany/myapp/security/oauth2/CustomClaimConverterIT.java
+rm src/test/java/com/mycompany/myapp/config/StaticResourcesWebConfigurerTest.java
+rm src/test/java/com/mycompany/myapp/security/oauth2/AudienceValidatorTest.java
+rm src/test/java/com/mycompany/myapp/IntegrationTest.java
+rm src/test/java/com/mycompany/myapp/web/rest/PublicUserResourceIT.java
+rm src/test/java/com/mycompany/myapp/config/timezone/HibernateTimeZoneIT.java
+rm src/test/java/com/mycompany/myapp/web/rest/LogoutResourceIT.java
+rm src/test/java/com/mycompany/myapp/web/rest/TagResourceIT.java
+rm src/test/java/com/mycompany/myapp/web/rest/AccountResourceIT.java
+rm src/test/java/com/mycompany/myapp/web/rest/errors/ExceptionTranslatorIT.java
+rm src/test/java/com/mycompany/myapp/service/UserServiceIT.java
+rm src/test/java/com/mycompany/myapp/web/rest/UserResourceIT.java
+rm src/test/java/com/mycompany/myapp/web/rest/BlogResourceIT.java
+----
 
 . Delete `spring-logback.xml` and tone down logging
 +
@@ -164,60 +169,113 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
 logging:
   level:
     root: ERROR
+    io.netty: ERROR
+    org.springframework: INFO
 ----
 
-. If reactive, update `LocaleConfiguration.java` to remove `@Import(WebFluxAutoConfiguration.class)`
+. If using Spring MVC, swap Undertow dependencies for Tomcat, modify `WebConfigurer` to comment out `setLocationForStaticAssets(server)`.
 
-. Update main `App.java` to add hints (first four of each list only required for reactive)
+. Update main `App.java` to add hints for Micrometer and Spring Security
 +
 [source,java]
 ----
-@NativeHint(options = "--enable-url-protocols=http,https")
+import org.springframework.nativex.hint.TypeHint;
+
 @TypeHint(
     types = {
-        ReactiveOAuth2AuthorizedClientManager.class,
-        ReactiveOAuth2AuthorizedClientProviderBuilder.class,
-        DefaultReactiveOAuth2AuthorizedClientManager.class,
-        AbstractWebClientReactiveOAuth2AccessTokenResponseClient.class,
+        org.HdrHistogram.Histogram.class,
+        org.HdrHistogram.ConcurrentHistogram.class,
+        org.springframework.security.oauth2.jwt.JwtDecoder.class
+    })
+----
+
+. Add springdocs native dependency:
++
+[source,xml]
+----
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-native</artifactId>
+    <version>1.6.0</version>
+</dependency>
+----
+
+. Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet], but you can make it work by adding files from https://github.com/liquibase/liquibase/pull/2005[this pull request] to your `src/main/resources/META-INF/native-image/liquibase` directory.
+
+. Add type hints for Liquibase and related classes.
++
+[source,java]
+----
+@TypeHint(
+    types = {
+        ...
         liquibase.configuration.LiquibaseConfiguration.class,
         com.zaxxer.hikari.HikariDataSource.class,
         liquibase.change.core.LoadDataColumnConfig.class,
-        org.HdrHistogram.Histogram.class,
-        org.HdrHistogram.ConcurrentHistogram.class,
-    },
-    typeNames = {
-        "org.springframework.web.reactive.function.client.DefaultWebClientBuilder",
-        "reactor.core.publisher.Traces$StackWalkerCallSiteSupplierFactory",
-        "reactor.core.publisher.Traces$SharedSecretsCallSiteSupplierFactory",
-        "reactor.core.publisher.Traces$ExceptionCallSiteSupplierFactory",
-        "com.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry[]"
-    },
-    access = AccessBits.ALL)
+        tech.jhipster.domain.util.FixedPostgreSQL10Dialect.class,
+        org.hibernate.type.TextType.class
+    })
 ----
 
-. Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet], but you can make it work by adding files from https://github.com/liquibase/liquibase/pull/2005[this pull request] to your `src/main/resources/META-INF/native-image/liquibase` directory
-
-. Add an `@AotProxyHint` for each Resource classes
+. If you're using JPA, https://docs.jboss.org/hibernate/orm/5.4/topical/html_single/bytecode/BytecodeEnhancement.html#_build_time_enhancement[configure Hibernate build-time bytecode enhancement]. Add the plugin right after the `spring-aot-maven-plugin`.
++
+Then, add the following `@JdkProxyHint` to you main application class.
 +
 [source,java]
 ----
-@AotProxyHint(targetClass = UserResource.class, proxyFeatures = ProxyBits.IS_STATIC)
-@AotProxyHint(targetClass = BlogResource.class, proxyFeatures = ProxyBits.IS_STATIC)
-@AotProxyHint(targetClass = PostResource.class, proxyFeatures = ProxyBits.IS_STATIC)
-@AotProxyHint(targetClass = TagResource.class, proxyFeatures = ProxyBits.IS_STATIC)
+@JdkProxyHint(
+    types = {
+        org.springframework.data.jpa.repository.support.CrudMethodMetadata.class,
+        org.springframework.aop.SpringProxy.class,
+        org.springframework.aop.framework.Advised.class,
+        org.springframework.core.DecoratingProxy.class
+    })
+----
++
+And, add the following to the top of the `User` entity
++
+[source,java]
+----
+@EntityListeners(AuditingEntityListener.class)
 ----
 
-. If using Spring WebFlux, refactor repositories and add `@AotProxyHint` for each one
+. If Spring MVC, add names to any `@RequestParam` and `@PathVariable` annotations.
++
+[source,java]
+----
+@RequestParam(name = "eagerload", required = false, defaultValue = "false") boolean eagerload
+@PathVariable("id") Long id
+----
 
-. If using Spring MVC, swap Undertow dependencies for Tomcat, modify `WebConfigurer` to comment out `setLocationForStaticAssets(server)`, and add additional type hints for the following classes:
+. For logout to work, update `LogoutResource` to remove `(expression = "idToken")`, inject the `OidcUser` instead, and get the token from there:
++
+[source,java]
+----
+public ResponseEntity<?> logout(HttpServletRequest request, @AuthenticationPrincipal OidcUser oidcUser) {
+    ...
+    OidcIdToken idToken = oidcUser.getIdToken();
+----
 
-- `tech.jhipster.domain.util.FixedPostgreSQL10Dialect.class`
-- `org.hibernate.type.TextType.class`
+. If Spring WebFlux, remove `@Component` from `SpaWebFilter` (should be fixed in the next JHipster release)
+
+. If using Spring WebFlux with R2DBC, we https://github.com/jhipster/generator-jhipster/pull/17277#issuecomment-993132173[haven't figured that one out yet].
 
 . Build with  `./mvnw package -Pnative,prod -DskipTests`
 
 == Known Issues
 
-- Springfox (Swagger) doesn't work
-- Metrics don't work
-- Repositories need refactoring for R2DBC
+- https://github.com/spring-projects-experimental/spring-native/issues/1365[`Code should not be empty`] happens with Spring MVC. Removing Mockito and tests fixes it.
+- Metrics don't work (`UnsupportedFeatureError: ThreadMXBean methods`)
+- Logs don't work (`/management/loggers` returns HTML instead of JSON)
+- Configuration doesn't work
++
+----
+org.springframework.http.converter.HttpMessageNotWritableException: No converter for [class org.springframework.boot.actuate.context.properties.ConfigurationPropertiesReportEndpoint$ApplicationConfigurationProperties] with preset Content-Type 'null'
+----
+- H2 doesn't work
++
+----
+java.lang.IllegalStateException: Failed to process lifecycle methods on bean definition with name 'h2TCPServer'
+----
++
+It might be possible to fix with a `@TypeHint` for `org.h2.tools.Server.class`. However, this class is not in the classpath by default.

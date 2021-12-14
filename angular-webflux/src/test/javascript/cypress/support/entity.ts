@@ -59,10 +59,10 @@ Cypress.Commands.add('setFieldSelectToLastOfEntity', (fieldName: string) => {
   return cy.get(`[data-cy="${fieldName}"]`).then(select => {
     const selectSize = (select[0] as HTMLSelectElement)?.options?.length || Number(select.attr('size')) || 0;
     if (selectSize > 0) {
-      return cy.get(`[data-cy="${fieldName}"] option`).then((options: any) => {
-        const elements = [...options].map(o => o.label);
+      return cy.get(`[data-cy="${fieldName}"] option`).then((options: JQuery<HTMLElement>) => {
+        const elements = [...options].map((o: HTMLElement) => (o as HTMLOptionElement).label);
         const lastElement = elements.length - 1;
-        cy.get(`[data-cy="${fieldName}"]`).select(elements[lastElement]).type('{downarrow}');
+        cy.get(`[data-cy="${fieldName}"]`).select(lastElement).type('{downarrow}');
       });
     } else {
       return cy.get(`[data-cy="${fieldName}"]`).type('{downarrow}');
@@ -72,7 +72,7 @@ Cypress.Commands.add('setFieldSelectToLastOfEntity', (fieldName: string) => {
 
 declare global {
   namespace Cypress {
-    interface Chainable<Subject> {
+    interface Chainable {
       getEntityHeading(entityName: string): Cypress.Chainable;
       getEntityCreateUpdateHeading(entityName: string): Cypress.Chainable;
       getEntityDetailsHeading(entityInstanceName: string): Cypress.Chainable;

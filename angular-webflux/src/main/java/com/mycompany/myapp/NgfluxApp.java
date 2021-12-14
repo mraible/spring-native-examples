@@ -8,13 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.env.Environment;
-import org.springframework.nativex.hint.AccessBits;
-import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.TypeHint;
-import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProviderBuilder;
-import org.springframework.security.oauth2.client.endpoint.AbstractWebClientReactiveOAuth2AccessTokenResponseClient;
-import org.springframework.security.oauth2.client.web.DefaultReactiveOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import tech.jhipster.config.DefaultProfileUtil;
 import tech.jhipster.config.JHipsterConstants;
 
@@ -25,23 +20,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
-@SpringBootApplication
-@NativeHint(options = "--enable-url-protocols=http,https")
 @TypeHint(types = {
-    ReactiveOAuth2AuthorizedClientManager.class,
-    ReactiveOAuth2AuthorizedClientProviderBuilder.class,
-    DefaultReactiveOAuth2AuthorizedClientManager.class,
-    AbstractWebClientReactiveOAuth2AccessTokenResponseClient.class,
-},
-    typeNames = {
-        "org.springframework.web.reactive.function.client.DefaultWebClientBuilder",
-        "reactor.core.publisher.Traces$StackWalkerCallSiteSupplierFactory",
-        "reactor.core.publisher.Traces$SharedSecretsCallSiteSupplierFactory",
-        "reactor.core.publisher.Traces$ExceptionCallSiteSupplierFactory",
-        "org.HdrHistogram.Histogram",
-        "org.HdrHistogram.ConcurrentHistogram"
-    },
-    access = AccessBits.ALL)
+    org.HdrHistogram.Histogram.class,
+    org.HdrHistogram.ConcurrentHistogram.class,
+    JwtDecoder.class
+})
+@SpringBootApplication
 @EnableConfigurationProperties({ApplicationProperties.class})
 public class NgfluxApp {
 
