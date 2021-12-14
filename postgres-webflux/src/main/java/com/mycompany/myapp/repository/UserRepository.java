@@ -1,33 +1,36 @@
 package com.mycompany.myapp.repository;
 
+import static org.springframework.data.relational.core.query.Criteria.where;
+import static org.springframework.data.relational.core.query.Query.query;
+
 import com.mycompany.myapp.domain.Authority;
 import com.mycompany.myapp.domain.User;
-import com.mycompany.myapp.repository.rowmapper.UserRowMapper;
-import com.mycompany.myapp.service.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.beanutils.BeanComparator;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
-import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.r2dbc.repository.Query;
-import org.springframework.data.r2dbc.repository.support.SimpleR2dbcRepository;
-import org.springframework.data.relational.repository.support.MappingRelationalEntityInformation;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.data.relational.core.sql.Column;
+import org.springframework.data.relational.core.sql.Expression;
+import org.springframework.data.relational.core.sql.Table;
 import org.springframework.r2dbc.core.DatabaseClient;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+/**
+ * Spring Data R2DBC repository for the {@link User} entity.
+ */
 @Repository
-public interface UserRepository extends ReactiveCrudRepository<User, Long>, UserRepositoryInternal {
+public interface UserRepository extends R2dbcRepository<User, String>, UserRepositoryInternal {
     Mono<User> findOneByLogin(String login);
 
     Flux<User> findAllByIdNotNull(Pageable pageable);
@@ -54,31 +57,16 @@ interface UserRepositoryInternal {
     Flux<User> findAllWithAuthorities(Pageable pageable);
 }
 
-@Component
-class UserRepositoryInternalImpl extends SimpleR2dbcRepository<User, Long> implements UserRepositoryInternal {
+class UserRepositoryInternalImpl implements UserRepositoryInternal {
+
     private final DatabaseClient db;
     private final R2dbcEntityTemplate r2dbcEntityTemplate;
-    private final EntityManager entityManager;
-    private final UserRowMapper userMapper;
     private final R2dbcConverter r2dbcConverter;
 
-    public UserRepositoryInternalImpl(
-        R2dbcEntityTemplate template,
-        EntityManager entityManager,
-        UserRowMapper userMapper,
-        R2dbcEntityOperations entityOperations,
-        R2dbcConverter converter
-    ) {
-        super(
-            new MappingRelationalEntityInformation(converter.getMappingContext().getRequiredPersistentEntity(User.class)),
-            entityOperations,
-            converter
-        );
-        this.db = template.getDatabaseClient();
-        this.r2dbcEntityTemplate = template;
-        this.entityManager = entityManager;
-        this.userMapper = userMapper;
-        this.r2dbcConverter = converter;
+    public UserRepositoryInternalImpl(DatabaseClient db, R2dbcEntityTemplate r2dbcEntityTemplate, R2dbcConverter r2dbcConverter) {
+        this.db = db;
+        this.r2dbcEntityTemplate = r2dbcEntityTemplate;
+        this.r2dbcConverter = r2dbcConverter;
     }
 
     @Override

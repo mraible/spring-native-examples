@@ -91,7 +91,6 @@ public class PostResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        System.out.println("POST: " + post);
         Post result = postRepository.save(post);
         return ResponseEntity
             .ok()

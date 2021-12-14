@@ -29,7 +29,6 @@ import org.springframework.data.relational.core.sql.Table;
 import org.springframework.data.relational.repository.support.MappingRelationalEntityInformation;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.RowsFetchSpec;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -37,7 +36,6 @@ import reactor.core.publisher.Mono;
  * Spring Data SQL reactive custom repository implementation for the Post entity.
  */
 @SuppressWarnings("unused")
-@Component
 class PostRepositoryInternalImpl extends SimpleR2dbcRepository<Post, Long> implements PostRepositoryInternal {
 
     private final DatabaseClient db;
@@ -116,14 +114,5 @@ class PostRepositoryInternalImpl extends SimpleR2dbcRepository<Post, Long> imple
         Post entity = postMapper.apply(row, "e");
         entity.setBlog(blogMapper.apply(row, "blog"));
         return entity;
-    }
-
-    protected <S extends Post> Mono<S> updateRelations(S entity) {
-        Mono<Void> result = entityManager.updateLinkTable(tagLink, entity.getId(), entity.getTags().stream().map(Tag::getId)).then();
-        return result.thenReturn(entity);
-    }
-
-    protected Mono<Void> deleteRelations(Long entityId) {
-        return entityManager.deleteFromLinkTable(tagLink, entityId);
     }
 }

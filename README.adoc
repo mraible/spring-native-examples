@@ -240,12 +240,20 @@ And, add the following to the top of the `User` entity
 ----
 
 . If Spring MVC, add names to any `@RequestParam` and `@PathVariable` annotations.
-
 +
 [source,java]
 ----
 @RequestParam(name = "eagerload", required = false, defaultValue = "false") boolean eagerload
 @PathVariable("id") Long id
+----
+
+. For logout to work, update `LogoutResource` to remove `(expression = "idToken")`, inject the `OidcUser` instead, and get the token from there:
++
+[source,java]
+----
+public ResponseEntity<?> logout(HttpServletRequest request, @AuthenticationPrincipal OidcUser oidcUser) {
+    ...
+    OidcIdToken idToken = oidcUser.getIdToken();
 ----
 
 . If Spring WebFlux, remove `@Component` from `SpaWebFilter` (should be fixed in the next JHipster release)
@@ -258,7 +266,7 @@ And, add the following to the top of the `User` entity
 
 - https://github.com/spring-projects-experimental/spring-native/issues/1365[`Code should not be empty`] happens with Spring MVC. Removing Mockito and tests fixes it.
 - Metrics don't work (`UnsupportedFeatureError: ThreadMXBean methods`)
-- Logs don't work
+- Logs don't work (`/management/loggers` returns HTML instead of JSON)
 - Configuration doesn't work
 +
 ----

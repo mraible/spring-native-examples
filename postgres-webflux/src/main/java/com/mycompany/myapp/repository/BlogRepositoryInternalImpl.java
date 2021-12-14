@@ -26,7 +26,6 @@ import org.springframework.data.relational.core.sql.Table;
 import org.springframework.data.relational.repository.support.MappingRelationalEntityInformation;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.RowsFetchSpec;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -34,7 +33,6 @@ import reactor.core.publisher.Mono;
  * Spring Data SQL reactive custom repository implementation for the Blog entity.
  */
 @SuppressWarnings("unused")
-@Component
 class BlogRepositoryInternalImpl extends SimpleR2dbcRepository<Blog, Long> implements BlogRepositoryInternal {
 
     private final DatabaseClient db;
