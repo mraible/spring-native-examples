@@ -113,9 +113,9 @@
         <lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
         <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
         <sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
-        <!-- jhipster-needle-maven-property -->
         <repackage.classifier/>
         <spring-native.version>0.11.0</spring-native.version>
+        <!-- jhipster-needle-maven-property -->
     </properties>
 
     <dependencyManagement>
@@ -992,11 +992,11 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <dependencies>
-                <!--dependency>
+                <dependency>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-devtools</artifactId>
                     <optional>true</optional>
-                </dependency-->
+                </dependency>
                 <dependency>
                     <groupId>com.h2database</groupId>
                     <artifactId>h2</artifactId>
@@ -1301,13 +1301,12 @@
             <id>native</id>
             <properties>
                 <repackage.classifier>exec</repackage.classifier>
-                <native-buildtools.version>0.9.3</native-buildtools.version>
+                <native-buildtools.version>0.9.8</native-buildtools.version>
             </properties>
             <dependencies>
                 <dependency>
-                    <groupId>org.graalvm.buildtools</groupId>
-                    <artifactId>junit-platform-native</artifactId>
-                    <version>${native-buildtools.version}</version>
+                    <groupId>org.junit.platform</groupId>
+                    <artifactId>junit-platform-launcher</artifactId>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -1317,6 +1316,7 @@
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
                         <version>${native-buildtools.version}</version>
+                        <extensions>true</extensions>
                         <executions>
                             <execution>
                                 <id>test-native</id>

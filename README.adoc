@@ -175,7 +175,7 @@ logging:
 
 . If using Spring MVC, swap Undertow dependencies for Tomcat, modify `WebConfigurer` to comment out `setLocationForStaticAssets(server)`.
 
-. Update main `App.java` to add hints for Micrometer
+. Update main `App.java` to add hints for Micrometer and Spring Security
 +
 [source,java]
 ----
@@ -184,7 +184,8 @@ import org.springframework.nativex.hint.TypeHint;
 @TypeHint(
     types = {
         org.HdrHistogram.Histogram.class,
-        org.HdrHistogram.ConcurrentHistogram.class
+        org.HdrHistogram.ConcurrentHistogram.class,
+        org.springframework.security.oauth2.jwt.JwtDecoder.class
     })
 ----
 
@@ -216,29 +217,48 @@ import org.springframework.nativex.hint.TypeHint;
     })
 ----
 
-. If Spring WebFlux, remove `@Component` from `SpaWebFilter`
-
-. If using Spring WebFlux, refactor repositories and add `@AotProxyHint` for each one
-
-. Add an `@AotProxyHint` for each Resource classes
+. If you're using JPA, https://docs.jboss.org/hibernate/orm/5.4/topical/html_single/bytecode/BytecodeEnhancement.html#_build_time_enhancement[configure Hibernate build-time bytecode enhancement]. Add the plugin right after the `spring-aot-maven-plugin`.
++
+Then, add the following `@JdkProxyHint` to you main application class.
 +
 [source,java]
 ----
-@AotProxyHint(targetClass = UserResource.class, proxyFeatures = ProxyBits.IS_STATIC)
-@AotProxyHint(targetClass = BlogResource.class, proxyFeatures = ProxyBits.IS_STATIC)
-@AotProxyHint(targetClass = PostResource.class, proxyFeatures = ProxyBits.IS_STATIC)
-@AotProxyHint(targetClass = TagResource.class, proxyFeatures = ProxyBits.IS_STATIC)
+@JdkProxyHint(
+    types = {
+        org.springframework.data.jpa.repository.support.CrudMethodMetadata.class,
+        org.springframework.aop.SpringProxy.class,
+        org.springframework.aop.framework.Advised.class,
+        org.springframework.core.DecoratingProxy.class
+    })
 ----
++
+And, add the following to the top of the `User` entity
++
+[source,java]
+----
+@EntityListeners(AuditingEntityListener.class)
+----
+
+. If Spring WebFlux, remove `@Component` from `SpaWebFilter` (should be fixed in the next JHipster release)
+
+. If using Spring WebFlux with R2DBC, we https://github.com/jhipster/generator-jhipster/pull/17277#issuecomment-993132173[haven't figured that one out yet].
 
 . Build with  `./mvnw package -Pnative,prod -DskipTests`
 
 == Known Issues
 
 - https://github.com/spring-projects-experimental/spring-native/issues/1365[`Code should not be empty`] happens with Spring MVC. Removing Mockito and tests fixes it.
-- Metrics don't work
+- Metrics don't work (`UnsupportedFeatureError: ThreadMXBean methods`)
+- Logs don't work
+- Configuration doesn't work
++
+----
+org.springframework.http.converter.HttpMessageNotWritableException: No converter for [class org.springframework.boot.actuate.context.properties.ConfigurationPropertiesReportEndpoint$ApplicationConfigurationProperties] with preset Content-Type 'null'
+----
 - H2 doesn't work
 +
 ----
 java.lang.IllegalStateException: Failed to process lifecycle methods on bean definition with name 'h2TCPServer'
 ----
-+ It might be possible to fix with a `@TypeHint` for `org.h2.tools.Server.class`. However, this class is not in the classpath by default.
++
+It might be possible to fix with a `@TypeHint` for `org.h2.tools.Server.class`. However, this class is not in the classpath by default.
