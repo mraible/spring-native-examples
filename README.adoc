@@ -239,6 +239,15 @@ And, add the following to the top of the `User` entity
 @EntityListeners(AuditingEntityListener.class)
 ----
 
+. If Spring MVC, add names to any `@RequestParam` and `@PathVariable` annotations.
+
++
+[source,java]
+----
+@RequestParam(name = "eagerload", required = false, defaultValue = "false") boolean eagerload
+@PathVariable("id") Long id
+----
+
 . If Spring WebFlux, remove `@Component` from `SpaWebFilter` (should be fixed in the next JHipster release)
 
 . If using Spring WebFlux with R2DBC, we https://github.com/jhipster/generator-jhipster/pull/17277#issuecomment-993132173[haven't figured that one out yet].
