@@ -18,6 +18,18 @@ import org.springframework.core.env.Environment;
 import tech.jhipster.config.DefaultProfileUtil;
 import tech.jhipster.config.JHipsterConstants;
 
+import org.springframework.nativex.hint.TypeHint;
+
+@TypeHint(
+    types = {
+        org.HdrHistogram.Histogram.class,
+        org.HdrHistogram.ConcurrentHistogram.class,
+        liquibase.configuration.LiquibaseConfiguration.class,
+        com.zaxxer.hikari.HikariDataSource.class,
+        liquibase.change.core.LoadDataColumnConfig.class,
+        tech.jhipster.domain.util.FixedPostgreSQL10Dialect.class,
+        org.hibernate.type.TextType.class
+    })
 @SpringBootApplication
 @EnableConfigurationProperties({ LiquibaseProperties.class, ApplicationProperties.class })
 public class PostgresMvcApp {

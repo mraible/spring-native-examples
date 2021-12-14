@@ -3,8 +3,8 @@ package com.mycompany.myapp.repository;
 import com.mycompany.myapp.domain.Post;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.relational.core.query.Criteria;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface PostRepository extends R2dbcRepository<Post, Long>, PostRepositoryInternal {
+public interface PostRepository extends ReactiveCrudRepository<Post, Long>, PostRepositoryInternal {
     Flux<Post> findAllBy(Pageable pageable);
 
     @Override
@@ -50,12 +50,7 @@ public interface PostRepository extends R2dbcRepository<Post, Long>, PostReposit
 }
 
 interface PostRepositoryInternal {
-    <S extends Post> Mono<S> insert(S entity);
     <S extends Post> Mono<S> save(S entity);
-    Mono<Integer> update(Post entity);
-
-    Flux<Post> findAll();
-    Mono<Post> findById(Long id);
     Flux<Post> findAllBy(Pageable pageable);
     Flux<Post> findAllBy(Pageable pageable, Criteria criteria);
 
@@ -64,6 +59,4 @@ interface PostRepositoryInternal {
     Flux<Post> findAllWithEagerRelationships();
 
     Flux<Post> findAllWithEagerRelationships(Pageable page);
-
-    Mono<Void> deleteById(Long id);
 }

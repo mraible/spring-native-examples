@@ -10,9 +10,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.env.Environment;
-import org.springframework.nativex.hint.AotProxyHint;
-import org.springframework.nativex.hint.ProxyBits;
-import org.springframework.nativex.hint.TypeHint;
+import org.springframework.nativex.hint.*;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProviderBuilder;
+import org.springframework.security.oauth2.client.endpoint.AbstractWebClientReactiveOAuth2AccessTokenResponseClient;
+import org.springframework.security.oauth2.client.web.DefaultReactiveOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import tech.jhipster.config.DefaultProfileUtil;
 import tech.jhipster.config.JHipsterConstants;
 
@@ -23,11 +26,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
-@TypeHint(
-    types = {
-        org.HdrHistogram.Histogram.class,
-        org.HdrHistogram.ConcurrentHistogram.class
-    })
+@TypeHint(types = {
+    org.HdrHistogram.Histogram.class,
+    org.HdrHistogram.ConcurrentHistogram.class,
+    JwtDecoder.class
+})
 @SpringBootApplication
 @EnableConfigurationProperties({ApplicationProperties.class})
 public class NgfluxApp {
