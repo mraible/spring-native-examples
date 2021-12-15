@@ -1,5 +1,9 @@
 = Spring Native with JHipster
 
+https://www.youtube.com/watch?v=f0yrxKRU-ME[Watch the presentation from the Garden State JUG]
+
+For Josh's examples, see his https://github.com/spring-tips/spring-native-011x[Spring Native 0.11.x repo].
+
 This repository contains five apps we (https://github.com/joshlong[@joshlong] and https://github.com/mraible[@mraible]) used to figure out how to make Spring Native work with JHipster.
 
 - `spring-native-webflux` - no client, no db, just WebFlux
