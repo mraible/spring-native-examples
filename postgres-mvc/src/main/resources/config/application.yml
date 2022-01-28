@@ -24,6 +24,11 @@ springdoc:
   api-docs:
     enabled: false
 ---
+logging:
+  level:
+    root: ERROR
+    io.netty: ERROR
+    org.springframework: INFO
 management:
   endpoints:
     web:
@@ -108,6 +113,7 @@ spring:
       repositories:
         bootstrap-mode: deferred
   jpa:
+    defer-datasource-initialization: true
     open-in-view: false
     properties:
       hibernate.jdbc.time_zone: UTC

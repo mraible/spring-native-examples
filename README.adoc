@@ -162,7 +162,7 @@ Caused by: java.lang.IllegalStateException: @MockBean is not supported yet by Sp
 and has been detected on type org.springframework.web.client.RestTemplate
 ----
 
-. If using Spring MVC, swap Undertow dependencies for Tomcat in `pom.xml`
+. If using Spring MVC, swap Undertow dependencies for Tomcat (in `pom.xml`) and modify `WebConfigurer` to comment out `setLocationForStaticAssets(server)`.
 
 . Update main `App.java` to add hints for Micrometer
 +
@@ -188,10 +188,17 @@ import org.springframework.nativex.hint.TypeHint;
 </dependency>
 ----
 +
-Swagger doesn't seem to work, so I'm not sure this is necessary. In my browser's console, it says:
+Swagger doesn't seem to work with WebFlux. In my browser's console, it says:
 +
 ----
-Failed to load resource: the server responded with a status of 404 (Not Found):8080/management/jhiopenapigroups
+Failed to load resource: the server responded with a status of 404 :8080/management/jhiopenapigroups
+----
++
+With Spring MVC, things don't even start up when running `./mvnw`:
++
+----
+Parameter 0 of constructor in org.springdoc.nativex.core.SpringDocHints
+required a bean of type 'org.springdoc.core.SwaggerUiConfigProperties' that could not be found.
 ----
 
 . Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet], but you can make it work by adding files from https://github.com/liquibase/liquibase/pull/2005[this pull request] to your `src/main/resources/META-INF/native-image/liquibase` directory.
@@ -213,6 +220,28 @@ Failed to load resource: the server responded with a status of 404 (Not Found):8
 
 . If you're using JPA, https://docs.jboss.org/hibernate/orm/5.4/topical/html_single/bytecode/BytecodeEnhancement.html#_build_time_enhancement[configure Hibernate build-time bytecode enhancement]. Add the plugin right after the `spring-aot-maven-plugin`.
 +
+In `application.yml`, turn off automatic datasource initialization so Liquibase works:
++
+[source,yaml]
+----
+spring:
+  ...
+  jpa:
+    defer-datasource-initialization: true
+----
++
+This _almost_ works. Current error is:
++
+----
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'liquibase':
+ Circular depends-on relationship between 'liquibase' and 'entityManagerFactory'
+----
+. Build with  `./mvnw package -Pnative,prod -DskipTests`
+. If you're using Spring WebFlux with R2DBC, we https://github.com/jhipster/generator-jhipster/pull/17277#issuecomment-993132173[haven't figured that one out yet].
+
+////
+I didn't make it this far because of the above error
+
 Then, add the following `@JdkProxyHint` to you main application class.
 +
 [source,java]
@@ -249,18 +278,16 @@ public ResponseEntity<?> logout(HttpServletRequest request, @AuthenticationPrinc
     ...
     OidcIdToken idToken = oidcUser.getIdToken();
 ----
-
-. If using Spring WebFlux with R2DBC, we https://github.com/jhipster/generator-jhipster/pull/17277#issuecomment-993132173[haven't figured that one out yet].
-
-. Build with  `./mvnw package -Pnative,prod -DskipTests`
+////
 
 == Known Issues
 
-// todo: update to Cannot find 'compilePath' in class org.apache.maven.plugin.compiler.TestCompilerMojo
-- https://github.com/spring-projects-experimental/spring-native/issues/1365[`Code should not be empty`] happens with Spring MVC. Removing Mockito and tests fixes it.
-- Metrics don't work (`UnsupportedFeatureError: ThreadMXBean methods`)
-- Logs don't work (`/management/loggers` returns HTML instead of JSON)
-- Configuration doesn't work
+- Liquibase no longer works. See `Error creating bean with name 'liquibase'` error above for more information.
+- `-DskipTests` is needed for both Spring MVC and WebFlux. Might because by Mockito. Excluding it and deleting tests worked last time. Not with 0.11.2.
+- Several of JHipster's Administration features don't work: metrics, logs, API docs, and configuration.
+- Metrics: `UnsupportedFeatureError: ThreadMXBean methods`
+- Logs: `/management/loggers` returns HTML instead of JSON
+- Configuration:
 +
 ----
 org.springframework.http.converter.HttpMessageNotWritableException: No converter for [class org.springframework.boot.actuate.context.properties.ConfigurationPropertiesReportEndpoint$ApplicationConfigurationProperties] with preset Content-Type 'null'
