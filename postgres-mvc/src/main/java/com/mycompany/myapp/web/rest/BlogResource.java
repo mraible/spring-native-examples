@@ -71,7 +71,7 @@ public class BlogResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/blogs/{id}")
-    public ResponseEntity<Blog> updateBlog(@PathVariable(name = "id", value = "id", required = false) final Long id, @Valid @RequestBody Blog blog)
+    public ResponseEntity<Blog> updateBlog(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody Blog blog)
         throws URISyntaxException {
         log.debug("REST request to update Blog : {}, {}", id, blog);
         if (blog.getId() == null) {
@@ -105,7 +105,7 @@ public class BlogResource {
      */
     @PatchMapping(value = "/blogs/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<Blog> partialUpdateBlog(
-        @PathVariable(name="id", value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody Blog blog
     ) throws URISyntaxException {
         log.debug("REST request to partial update Blog partially : {}, {}", id, blog);
@@ -158,7 +158,7 @@ public class BlogResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the blog, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/blogs/{id}")
-    public ResponseEntity<Blog> getBlog(@PathVariable("id") Long id) {
+    public ResponseEntity<Blog> getBlog(@PathVariable Long id) {
         log.debug("REST request to get Blog : {}", id);
         Optional<Blog> blog = blogRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(blog);
@@ -171,7 +171,7 @@ public class BlogResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/blogs/{id}")
-    public ResponseEntity<Void> deleteBlog(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteBlog(@PathVariable Long id) {
         log.debug("REST request to delete Blog : {}", id);
         blogRepository.deleteById(id);
         return ResponseEntity

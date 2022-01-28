@@ -7,8 +7,8 @@ import static org.springframework.security.test.web.reactive.server.SecurityMock
 
 import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.domain.Tag;
+import com.mycompany.myapp.repository.EntityManager;
 import com.mycompany.myapp.repository.TagRepository;
-import com.mycompany.myapp.service.EntityManager;
 import java.time.Duration;
 import java.util.List;
 import java.util.Random;
@@ -29,7 +29,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
  * Integration tests for the {@link TagResource} REST controller.
  */
 @IntegrationTest
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = IntegrationTest.DEFAULT_ENTITY_TIMEOUT)
 @WithMockUser
 class TagResourceIT {
 

@@ -1,5 +1,9 @@
 {
-  "name": "Blog",
+  "applications": "*",
+  "changelogDate": "20210929181451",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "blog",
   "fields": [
     {
       "fieldName": "name",
@@ -14,23 +18,19 @@
       "fieldValidateRulesMinlength": "2"
     }
   ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Blog",
+  "pagination": "no",
+  "readOnly": false,
   "relationships": [
     {
-      "relationshipType": "many-to-one",
+      "otherEntityField": "login",
       "otherEntityName": "user",
       "otherEntityRelationshipName": "blog",
       "relationshipName": "user",
-      "otherEntityField": "login"
+      "relationshipType": "many-to-one"
     }
   ],
-  "entityTableName": "blog",
-  "dto": "no",
-  "pagination": "no",
-  "service": "no",
-  "jpaMetamodelFiltering": false,
-  "fluentMethods": true,
-  "readOnly": false,
-  "embedded": false,
-  "applications": "*",
-  "changelogDate": "20210929181451"
+  "service": "no"
 }

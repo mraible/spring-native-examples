@@ -1,4 +1,4 @@
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs/esm';
 import { IBlog } from 'app/entities/blog/blog.model';
 import { ITag } from 'app/entities/tag/tag.model';
 

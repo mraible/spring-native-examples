@@ -1,11 +1,12 @@
 package com.mycompany.myapp.repository;
 
+import static org.springframework.data.relational.core.query.Criteria.where;
+import static org.springframework.data.relational.core.query.Query.query;
+
 import com.mycompany.myapp.domain.Post;
 import com.mycompany.myapp.domain.Tag;
 import com.mycompany.myapp.repository.rowmapper.BlogRowMapper;
 import com.mycompany.myapp.repository.rowmapper.PostRowMapper;
-import com.mycompany.myapp.service.EntityManager;
-import com.mycompany.myapp.service.EntityManager.LinkTable;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.time.Instant;
@@ -29,7 +30,6 @@ import org.springframework.data.relational.core.sql.Table;
 import org.springframework.data.relational.repository.support.MappingRelationalEntityInformation;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.RowsFetchSpec;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -37,7 +37,6 @@ import reactor.core.publisher.Mono;
  * Spring Data SQL reactive custom repository implementation for the Post entity.
  */
 @SuppressWarnings("unused")
-@Component
 class PostRepositoryInternalImpl extends SimpleR2dbcRepository<Post, Long> implements PostRepositoryInternal {
 
     private final DatabaseClient db;
@@ -50,7 +49,7 @@ class PostRepositoryInternalImpl extends SimpleR2dbcRepository<Post, Long> imple
     private static final Table entityTable = Table.aliased("post", EntityManager.ENTITY_ALIAS);
     private static final Table blogTable = Table.aliased("blog", "blog");
 
-    private static final EntityManager.LinkTable tagLink = new LinkTable("rel_post__tag", "post_id", "tag_id");
+    private static final EntityManager.LinkTable tagLink = new EntityManager.LinkTable("rel_post__tag", "post_id", "tag_id");
 
     public PostRepositoryInternalImpl(
         R2dbcEntityTemplate template,
@@ -98,6 +97,16 @@ class PostRepositoryInternalImpl extends SimpleR2dbcRepository<Post, Long> imple
     }
 
     @Override
+    public Flux<Post> findAll() {
+        return findAllBy(null, null);
+    }
+
+    @Override
+    public Mono<Post> findById(Long id) {
+        return createQuery(null, where(EntityManager.ENTITY_ALIAS + ".id").is(id)).one();
+    }
+
+    @Override
     public Mono<Post> findOneWithEagerRelationships(Long id) {
         return findById(id);
     }
@@ -116,5 +125,24 @@ class PostRepositoryInternalImpl extends SimpleR2dbcRepository<Post, Long> imple
         Post entity = postMapper.apply(row, "e");
         entity.setBlog(blogMapper.apply(row, "blog"));
         return entity;
+    }
+
+    @Override
+    public <S extends Post> Mono<S> save(S entity) {
+        return super.save(entity).flatMap((S e) -> updateRelations(e));
+    }
+
+    protected <S extends Post> Mono<S> updateRelations(S entity) {
+        Mono<Void> result = entityManager.updateLinkTable(tagLink, entity.getId(), entity.getTags().stream().map(Tag::getId)).then();
+        return result.thenReturn(entity);
+    }
+
+    @Override
+    public Mono<Void> deleteById(Long entityId) {
+        return deleteRelations(entityId).then(super.deleteById(entityId));
+    }
+
+    protected Mono<Void> deleteRelations(Long entityId) {
+        return entityManager.deleteFromLinkTable(tagLink, entityId);
     }
 }

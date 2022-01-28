@@ -1,8 +1,9 @@
 package com.mycompany.myapp.repository;
 
+import static org.springframework.data.relational.core.query.Criteria.where;
+
 import com.mycompany.myapp.domain.Tag;
 import com.mycompany.myapp.repository.rowmapper.TagRowMapper;
-import com.mycompany.myapp.service.EntityManager;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -25,7 +26,6 @@ import org.springframework.data.relational.core.sql.Table;
 import org.springframework.data.relational.repository.support.MappingRelationalEntityInformation;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.RowsFetchSpec;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -33,7 +33,6 @@ import reactor.core.publisher.Mono;
  * Spring Data SQL reactive custom repository implementation for the Tag entity.
  */
 @SuppressWarnings("unused")
-@Component
 class TagRepositoryInternalImpl extends SimpleR2dbcRepository<Tag, Long> implements TagRepositoryInternal {
 
     private final DatabaseClient db;
@@ -80,8 +79,23 @@ class TagRepositoryInternalImpl extends SimpleR2dbcRepository<Tag, Long> impleme
         return db.sql(select).map(this::process);
     }
 
+    @Override
+    public Flux<Tag> findAll() {
+        return findAllBy(null, null);
+    }
+
+    @Override
+    public Mono<Tag> findById(Long id) {
+        return createQuery(null, where(EntityManager.ENTITY_ALIAS + ".id").is(id)).one();
+    }
+
     private Tag process(Row row, RowMetadata metadata) {
         Tag entity = tagMapper.apply(row, "e");
         return entity;
+    }
+
+    @Override
+    public <S extends Tag> Mono<S> save(S entity) {
+        return super.save(entity);
     }
 }

@@ -42,15 +42,15 @@ export class TagComponent implements OnInit {
         size: this.itemsPerPage,
         sort: this.sort(),
       })
-      .subscribe(
-        (res: HttpResponse<ITag[]>) => {
+      .subscribe({
+        next: (res: HttpResponse<ITag[]>) => {
           this.isLoading = false;
           this.paginateTags(res.body, res.headers);
         },
-        () => {
+        error: () => {
           this.isLoading = false;
-        }
-      );
+        },
+      });
   }
 
   reset(): void {

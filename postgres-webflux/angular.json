@@ -108,6 +108,11 @@
   },
   "defaultProject": "postgres",
   "cli": {
+    "cache": {
+      "enabled": true,
+      "path": "./target/",
+      "environment": "all"
+    },
     "packageManager": "npm"
   }
 }

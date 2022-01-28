@@ -20,7 +20,6 @@ import org.springframework.data.relational.core.sql.Column;
 import org.springframework.data.relational.core.sql.Expression;
 import org.springframework.data.relational.core.sql.Table;
 import org.springframework.r2dbc.core.DatabaseClient;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -58,7 +57,6 @@ interface UserRepositoryInternal {
     Flux<User> findAllWithAuthorities(Pageable pageable);
 }
 
-@Component
 class UserRepositoryInternalImpl implements UserRepositoryInternal {
 
     private final DatabaseClient db;

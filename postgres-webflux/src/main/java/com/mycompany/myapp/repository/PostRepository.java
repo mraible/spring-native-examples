@@ -26,9 +26,6 @@ public interface PostRepository extends ReactiveCrudRepository<Post, Long>, Post
     @Override
     Flux<Post> findAllWithEagerRelationships(Pageable page);
 
-    @Override
-    Mono<Void> deleteById(Long id);
-
     @Query("SELECT * FROM post entity WHERE entity.blog_id = :id")
     Flux<Post> findByBlog(Long id);
 
@@ -38,7 +35,9 @@ public interface PostRepository extends ReactiveCrudRepository<Post, Long>, Post
     @Query("SELECT entity.* FROM post entity JOIN rel_post__tag joinTable ON entity.id = joinTable.post_id WHERE joinTable.tag_id = :id")
     Flux<Post> findByTag(Long id);
 
-    // just to avoid having unambigous methods
+    @Override
+    <S extends Post> Mono<S> save(S entity);
+
     @Override
     Flux<Post> findAll();
 
@@ -46,12 +45,18 @@ public interface PostRepository extends ReactiveCrudRepository<Post, Long>, Post
     Mono<Post> findById(Long id);
 
     @Override
-    <S extends Post> Mono<S> save(S entity);
+    Mono<Void> deleteById(Long id);
 }
 
 interface PostRepositoryInternal {
     <S extends Post> Mono<S> save(S entity);
+
     Flux<Post> findAllBy(Pageable pageable);
+
+    Flux<Post> findAll();
+
+    Mono<Post> findById(Long id);
+
     Flux<Post> findAllBy(Pageable pageable, Criteria criteria);
 
     Mono<Post> findOneWithEagerRelationships(Long id);
@@ -59,4 +64,6 @@ interface PostRepositoryInternal {
     Flux<Post> findAllWithEagerRelationships();
 
     Flux<Post> findAllWithEagerRelationships(Pageable page);
+
+    Mono<Void> deleteById(Long id);
 }

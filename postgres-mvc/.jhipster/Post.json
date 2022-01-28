@@ -1,5 +1,9 @@
 {
-  "name": "Post",
+  "applications": "*",
+  "changelogDate": "20210929181452",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "post",
   "fields": [
     {
       "fieldName": "title",
@@ -18,31 +22,27 @@
       "fieldValidateRules": ["required"]
     }
   ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Post",
+  "pagination": "infinite-scroll",
+  "readOnly": false,
   "relationships": [
     {
-      "relationshipType": "many-to-one",
+      "otherEntityField": "name",
       "otherEntityName": "blog",
       "otherEntityRelationshipName": "post",
       "relationshipName": "blog",
-      "otherEntityField": "name"
+      "relationshipType": "many-to-one"
     },
     {
-      "relationshipType": "many-to-many",
+      "otherEntityField": "name",
       "otherEntityName": "tag",
       "otherEntityRelationshipName": "entry",
+      "ownerSide": true,
       "relationshipName": "tag",
-      "otherEntityField": "name",
-      "ownerSide": true
+      "relationshipType": "many-to-many"
     }
   ],
-  "entityTableName": "post",
-  "dto": "no",
-  "pagination": "infinite-scroll",
-  "service": "no",
-  "jpaMetamodelFiltering": false,
-  "fluentMethods": true,
-  "readOnly": false,
-  "embedded": false,
-  "applications": "*",
-  "changelogDate": "20210929181452"
+  "service": "no"
 }

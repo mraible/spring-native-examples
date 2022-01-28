@@ -108,6 +108,11 @@
   },
   "defaultProject": "postgres-mvc",
   "cli": {
+    "cache": {
+      "enabled": true,
+      "path": "./target/",
+      "environment": "all"
+    },
     "packageManager": "npm"
   }
 }

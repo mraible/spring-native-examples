@@ -48,15 +48,15 @@ export class PostComponent implements OnInit {
         size: this.itemsPerPage,
         sort: this.sort(),
       })
-      .subscribe(
-        (res: HttpResponse<IPost[]>) => {
+      .subscribe({
+        next: (res: HttpResponse<IPost[]>) => {
           this.isLoading = false;
           this.paginatePosts(res.body, res.headers);
         },
-        () => {
+        error: () => {
           this.isLoading = false;
-        }
-      );
+        },
+      });
   }
 
   reset(): void {

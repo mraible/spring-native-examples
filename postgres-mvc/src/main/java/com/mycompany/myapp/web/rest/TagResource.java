@@ -77,7 +77,7 @@ public class TagResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/tags/{id}")
-    public ResponseEntity<Tag> updateTag(@PathVariable(name="id", value = "id", required = false) final Long id, @Valid @RequestBody Tag tag)
+    public ResponseEntity<Tag> updateTag(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody Tag tag)
         throws URISyntaxException {
         log.debug("REST request to update Tag : {}, {}", id, tag);
         if (tag.getId() == null) {
@@ -110,7 +110,7 @@ public class TagResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/tags/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Tag> partialUpdateTag(@PathVariable(name="id", value = "id", required = false) final Long id, @NotNull @RequestBody Tag tag)
+    public ResponseEntity<Tag> partialUpdateTag(@PathVariable(value = "id", required = false) final Long id, @NotNull @RequestBody Tag tag)
         throws URISyntaxException {
         log.debug("REST request to partial update Tag partially : {}, {}", id, tag);
         if (tag.getId() == null) {
@@ -162,7 +162,7 @@ public class TagResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the tag, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/tags/{id}")
-    public ResponseEntity<Tag> getTag(@PathVariable("id") Long id) {
+    public ResponseEntity<Tag> getTag(@PathVariable Long id) {
         log.debug("REST request to get Tag : {}", id);
         Optional<Tag> tag = tagRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(tag);
@@ -175,7 +175,7 @@ public class TagResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/tags/{id}")
-    public ResponseEntity<Void> deleteTag(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteTag(@PathVariable Long id) {
         log.debug("REST request to delete Tag : {}", id);
         tagRepository.deleteById(id);
         return ResponseEntity

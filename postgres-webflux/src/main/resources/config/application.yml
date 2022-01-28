@@ -24,11 +24,6 @@ springdoc:
   api-docs:
     enabled: false
 ---
-logging:
-  level:
-    root: ERROR
-    io.netty: ERROR
-    org.springframework: INFO
 management:
   endpoints:
     web:

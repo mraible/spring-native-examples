@@ -7,9 +7,9 @@ import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.config.Constants;
 import com.mycompany.myapp.config.TestSecurityConfiguration;
 import com.mycompany.myapp.domain.User;
+import com.mycompany.myapp.repository.EntityManager;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
-import com.mycompany.myapp.service.EntityManager;
 import com.mycompany.myapp.service.dto.UserDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 /**
  * Integration tests for the {@link UserResource} REST controller.
  */
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = IntegrationTest.DEFAULT_TIMEOUT)
 @WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 @IntegrationTest
 class PublicUserResourceIT {
