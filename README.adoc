@@ -14,7 +14,7 @@ This repository contains five apps we (https://github.com/joshlong[@joshlong] an
 
 You should be able to create a JHipster monolith with OIDC, then make the following changes.
 
-. Modify `pom.xml` to add native, adjust dependencies, and disable devtools:
+. Modify `pom.xml` to add Spring Native support:
 +
 [source,xml]
 ----
@@ -38,7 +38,7 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
 ...
 
 <repackage.classifier/>
-<spring-native.version>0.11.0</spring-native.version>
+<spring-native.version>0.11.2</spring-native.version>
 ...
 
 <!-- If reactive, comment out boringssl. This allows Spring Native to build the image and gets around this error:
@@ -96,7 +96,7 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
     <id>native</id>
     <properties>
         <repackage.classifier>exec</repackage.classifier>
-        <native-buildtools.version>0.9.8</native-buildtools.version>
+        <native-buildtools.version>0.9.9</native-buildtools.version>
     </properties>
     <dependencies>
         <dependency>
@@ -134,39 +134,7 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
 </profile>
 ----
 
-. If you're using Spring MVC, exclude Mockito from `spring-boot-starter-test`:
-+
-[source,xml]
-----
-<exclusion>
-    <groupId>org.mockito</groupId>
-    <artifactId>*</artifactId>
-</exclusion>
-----
-+
-And delete any tests that import Mockito. https://github.com/spring-projects-experimental/spring-native/issues/1343[Mockito isn't supported yet].
-+
-[source,shell]
-----
-rm src/test/java/com/mycompany/myapp/config/TestSecurityConfiguration.java
-rm src/test/java/com/mycompany/myapp/web/rest/PostResourceIT.java
-rm src/test/java/com/mycompany/myapp/config/WebConfigurerTest.java
-rm src/test/java/com/mycompany/myapp/security/oauth2/CustomClaimConverterIT.java
-rm src/test/java/com/mycompany/myapp/config/StaticResourcesWebConfigurerTest.java
-rm src/test/java/com/mycompany/myapp/security/oauth2/AudienceValidatorTest.java
-rm src/test/java/com/mycompany/myapp/IntegrationTest.java
-rm src/test/java/com/mycompany/myapp/web/rest/PublicUserResourceIT.java
-rm src/test/java/com/mycompany/myapp/config/timezone/HibernateTimeZoneIT.java
-rm src/test/java/com/mycompany/myapp/web/rest/LogoutResourceIT.java
-rm src/test/java/com/mycompany/myapp/web/rest/TagResourceIT.java
-rm src/test/java/com/mycompany/myapp/web/rest/AccountResourceIT.java
-rm src/test/java/com/mycompany/myapp/web/rest/errors/ExceptionTranslatorIT.java
-rm src/test/java/com/mycompany/myapp/service/UserServiceIT.java
-rm src/test/java/com/mycompany/myapp/web/rest/UserResourceIT.java
-rm src/test/java/com/mycompany/myapp/web/rest/BlogResourceIT.java
-----
-
-. Delete `spring-logback.xml` and tone down logging
+. Delete `src/main/resources/logback-spring.xml` and tone down logging. Remove `src/test/resources/logback.xml` too.
 +
 [source,yaml]
 ----
@@ -177,9 +145,26 @@ logging:
     org.springframework: INFO
 ----
 
-. If using Spring MVC, swap Undertow dependencies for Tomcat, modify `WebConfigurer` to comment out `setLocationForStaticAssets(server)`.
+. There's an issue when using Spring WebFlux if you don't use `-DskipTests` when running `./mvnw package -Pnative`:
++
+----
+[ERROR] Failed to execute goal org.springframework.experimental:spring-aot-maven-plugin:0.11.2:test-generate (test-generate) on project jhipster:
+Build failed during Spring AOT test code generation: Unable to execute mojo:
+Unable to parse configuration of mojo org.apache.maven.plugins:maven-compiler-plugin:3.9.0:testCompile for parameter compilePath:
+Cannot find 'compilePath' in class org.apache.maven.plugin.compiler.TestCompilerMojo -> [Help 1]
+[ERROR]
+----
++
+The error seems to be better when using Spring MVC:
++
+----
+Caused by: java.lang.IllegalStateException: @MockBean is not supported yet by Spring AOT
+and has been detected on type org.springframework.web.client.RestTemplate
+----
 
-. Update main `App.java` to add hints for Micrometer and Spring Security
+. If using Spring MVC, swap Undertow dependencies for Tomcat in `pom.xml`
+
+. Update main `App.java` to add hints for Micrometer
 +
 [source,java]
 ----
@@ -188,8 +173,7 @@ import org.springframework.nativex.hint.TypeHint;
 @TypeHint(
     types = {
         org.HdrHistogram.Histogram.class,
-        org.HdrHistogram.ConcurrentHistogram.class,
-        org.springframework.security.oauth2.jwt.JwtDecoder.class
+        org.HdrHistogram.ConcurrentHistogram.class
     })
 ----
 
@@ -200,8 +184,14 @@ import org.springframework.nativex.hint.TypeHint;
 <dependency>
     <groupId>org.springdoc</groupId>
     <artifactId>springdoc-openapi-native</artifactId>
-    <version>1.6.0</version>
+    <version>1.6.2</version>
 </dependency>
+----
++
+Swagger doesn't seem to work, so I'm not sure this is necessary. In my browser's console, it says:
++
+----
+Failed to load resource: the server responded with a status of 404 (Not Found):8080/management/jhiopenapigroups
 ----
 
 . Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet], but you can make it work by adding files from https://github.com/liquibase/liquibase/pull/2005[this pull request] to your `src/main/resources/META-INF/native-image/liquibase` directory.
@@ -260,14 +250,13 @@ public ResponseEntity<?> logout(HttpServletRequest request, @AuthenticationPrinc
     OidcIdToken idToken = oidcUser.getIdToken();
 ----
 
-. If Spring WebFlux, remove `@Component` from `SpaWebFilter` (should be fixed in the next JHipster release)
-
 . If using Spring WebFlux with R2DBC, we https://github.com/jhipster/generator-jhipster/pull/17277#issuecomment-993132173[haven't figured that one out yet].
 
 . Build with  `./mvnw package -Pnative,prod -DskipTests`
 
 == Known Issues
 
+// todo: update to Cannot find 'compilePath' in class org.apache.maven.plugin.compiler.TestCompilerMojo
 - https://github.com/spring-projects-experimental/spring-native/issues/1365[`Code should not be empty`] happens with Spring MVC. Removing Mockito and tests fixes it.
 - Metrics don't work (`UnsupportedFeatureError: ThreadMXBean methods`)
 - Logs don't work (`/management/loggers` returns HTML instead of JSON)
