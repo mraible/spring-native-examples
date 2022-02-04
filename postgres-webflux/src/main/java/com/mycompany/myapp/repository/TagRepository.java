@@ -17,7 +17,9 @@ import reactor.core.publisher.Mono;
 public interface TagRepository extends ReactiveCrudRepository<Tag, Long>, TagRepositoryInternal {
     Flux<Tag> findAllBy(Pageable pageable);
 
-    // just to avoid having unambigous methods
+    @Override
+    <S extends Tag> Mono<S> save(S entity);
+
     @Override
     Flux<Tag> findAll();
 
@@ -25,11 +27,17 @@ public interface TagRepository extends ReactiveCrudRepository<Tag, Long>, TagRep
     Mono<Tag> findById(Long id);
 
     @Override
-    <S extends Tag> Mono<S> save(S entity);
+    Mono<Void> deleteById(Long id);
 }
 
 interface TagRepositoryInternal {
     <S extends Tag> Mono<S> save(S entity);
+
     Flux<Tag> findAllBy(Pageable pageable);
+
+    Flux<Tag> findAll();
+
+    Mono<Tag> findById(Long id);
+
     Flux<Tag> findAllBy(Pageable pageable, Criteria criteria);
 }

@@ -11,8 +11,8 @@
     "backend:doc:test": "./mvnw -ntp javadoc:javadoc --batch-mode",
     "backend:info": "./mvnw -ntp enforcer:display-info --batch-mode",
     "backend:nohttp:test": "./mvnw -ntp checkstyle:check --batch-mode",
-    "backend:start": "./mvnw -P-webapp",
-    "backend:unit:test": "./mvnw -ntp -P-webapp verify --batch-mode -Dlogging.level.ROOT=OFF -Dlogging.level.org.zalando=OFF -Dlogging.level.tech.jhipster=OFF -Dlogging.level.com.mycompany.myapp=OFF -Dlogging.level.org.springframework=OFF -Dlogging.level.org.springframework.web=OFF -Dlogging.level.org.springframework.security=OFF",
+    "backend:start": "./mvnw",
+    "backend:unit:test": "./mvnw -ntp verify --batch-mode -Dlogging.level.ROOT=OFF -Dlogging.level.org.zalando=OFF -Dlogging.level.tech.jhipster=OFF -Dlogging.level.com.mycompany.myapp=OFF -Dlogging.level.org.springframework=OFF -Dlogging.level.org.springframework.web=OFF -Dlogging.level.org.springframework.security=OFF",
     "ci:backend:test": "npm run backend:info && npm run backend:doc:test && npm run backend:nohttp:test && npm run backend:unit:test -- -P$npm_package_config_default_environment",
     "ci:e2e:package": "npm run java:$npm_package_config_packaging:$npm_package_config_default_environment -- -Pe2e -Denforcer.skip=true",
     "ci:e2e:prepare": "npm run ci:e2e:prepare:docker",
@@ -48,13 +48,13 @@
     "packaging": "jar"
   },
   "devDependencies": {
-    "generator-jhipster": "7.4.1",
+    "generator-jhipster": "7.6.0",
     "prettier": "2.5.1",
-    "prettier-plugin-java": "1.6.0",
+    "prettier-plugin-java": "1.6.1",
     "prettier-plugin-packagejson": "2.2.15"
   },
   "engines": {
-    "node": ">=14.18.1"
+    "node": ">=16.13.1"
   },
   "cacheDirectories": [
     "node_modules"

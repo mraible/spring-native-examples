@@ -1,9 +1,10 @@
 package com.mycompany.myapp.repository;
 
+import static org.springframework.data.relational.core.query.Criteria.where;
+
 import com.mycompany.myapp.domain.Blog;
 import com.mycompany.myapp.repository.rowmapper.BlogRowMapper;
 import com.mycompany.myapp.repository.rowmapper.UserRowMapper;
-import com.mycompany.myapp.service.EntityManager;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -26,7 +27,6 @@ import org.springframework.data.relational.core.sql.Table;
 import org.springframework.data.relational.repository.support.MappingRelationalEntityInformation;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.RowsFetchSpec;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -34,7 +34,6 @@ import reactor.core.publisher.Mono;
  * Spring Data SQL reactive custom repository implementation for the Blog entity.
  */
 @SuppressWarnings("unused")
-@Component
 class BlogRepositoryInternalImpl extends SimpleR2dbcRepository<Blog, Long> implements BlogRepositoryInternal {
 
     private final DatabaseClient db;
@@ -92,9 +91,24 @@ class BlogRepositoryInternalImpl extends SimpleR2dbcRepository<Blog, Long> imple
         return db.sql(select).map(this::process);
     }
 
+    @Override
+    public Flux<Blog> findAll() {
+        return findAllBy(null, null);
+    }
+
+    @Override
+    public Mono<Blog> findById(Long id) {
+        return createQuery(null, where(EntityManager.ENTITY_ALIAS + ".id").is(id)).one();
+    }
+
     private Blog process(Row row, RowMetadata metadata) {
         Blog entity = blogMapper.apply(row, "e");
         entity.setUser(userMapper.apply(row, "user"));
         return entity;
+    }
+
+    @Override
+    public <S extends Blog> Mono<S> save(S entity) {
+        return super.save(entity);
     }
 }

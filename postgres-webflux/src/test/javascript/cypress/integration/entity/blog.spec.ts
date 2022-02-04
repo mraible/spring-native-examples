@@ -14,24 +14,14 @@ import {
 describe('Blog e2e test', () => {
   const blogPageUrl = '/blog';
   const blogPageUrlPattern = new RegExp('/blog(\\?.*)?$');
-  const username = Cypress.env('E2E_USERNAME') ?? 'admin';
-  const password = Cypress.env('E2E_PASSWORD') ?? 'admin';
+  const username = Cypress.env('E2E_USERNAME') ?? 'user';
+  const password = Cypress.env('E2E_PASSWORD') ?? 'user';
   const blogSample = { name: 'Handmade next-generation 1080p', handle: 'hack wireless' };
 
   let blog: any;
 
   beforeEach(() => {
-    cy.getOauth2Data();
-    cy.get('@oauth2Data').then(oauth2Data => {
-      cy.oauthLogin(oauth2Data, username, password);
-    });
-    cy.intercept('GET', '/api/blogs').as('entitiesRequest');
-    cy.visit('');
-    cy.get(entityItemSelector).should('exist');
-  });
-
-  beforeEach(() => {
-    Cypress.Cookies.preserveOnce('XSRF-TOKEN', 'JSESSIONID');
+    cy.login(username, password);
   });
 
   beforeEach(() => {
@@ -49,11 +39,6 @@ describe('Blog e2e test', () => {
         blog = undefined;
       });
     }
-  });
-
-  afterEach(() => {
-    cy.oauthLogout();
-    cy.clearCache();
   });
 
   it('Blogs menu should load Blogs page', () => {
@@ -78,11 +63,11 @@ describe('Blog e2e test', () => {
       });
 
       it('should load create Blog page', () => {
-        cy.get(entityCreateButtonSelector).click({ force: true });
+        cy.get(entityCreateButtonSelector).click();
         cy.url().should('match', new RegExp('/blog/new$'));
         cy.getEntityCreateUpdateHeading('Blog');
         cy.get(entityCreateSaveButtonSelector).should('exist');
-        cy.get(entityCreateCancelButtonSelector).click({ force: true });
+        cy.get(entityCreateCancelButtonSelector).click();
         cy.wait('@entitiesRequest').then(({ response }) => {
           expect(response!.statusCode).to.equal(200);
         });
@@ -120,7 +105,7 @@ describe('Blog e2e test', () => {
       it('detail button click should load details Blog page', () => {
         cy.get(entityDetailsButtonSelector).first().click();
         cy.getEntityDetailsHeading('blog');
-        cy.get(entityDetailsBackButtonSelector).click({ force: true });
+        cy.get(entityDetailsBackButtonSelector).click();
         cy.wait('@entitiesRequest').then(({ response }) => {
           expect(response!.statusCode).to.equal(200);
         });
@@ -131,7 +116,7 @@ describe('Blog e2e test', () => {
         cy.get(entityEditButtonSelector).first().click();
         cy.getEntityCreateUpdateHeading('Blog');
         cy.get(entityCreateSaveButtonSelector).should('exist');
-        cy.get(entityCreateCancelButtonSelector).click({ force: true });
+        cy.get(entityCreateCancelButtonSelector).click();
         cy.wait('@entitiesRequest').then(({ response }) => {
           expect(response!.statusCode).to.equal(200);
         });
@@ -141,7 +126,7 @@ describe('Blog e2e test', () => {
       it('last delete button click should delete instance of Blog', () => {
         cy.get(entityDeleteButtonSelector).last().click();
         cy.getEntityDeleteDialogHeading('blog').should('exist');
-        cy.get(entityConfirmDeleteButtonSelector).click({ force: true });
+        cy.get(entityConfirmDeleteButtonSelector).click();
         cy.wait('@deleteEntityRequest').then(({ response }) => {
           expect(response!.statusCode).to.equal(204);
         });
@@ -158,7 +143,7 @@ describe('Blog e2e test', () => {
   describe('new Blog page', () => {
     beforeEach(() => {
       cy.visit(`${blogPageUrl}`);
-      cy.get(entityCreateButtonSelector).click({ force: true });
+      cy.get(entityCreateButtonSelector).click();
       cy.getEntityCreateUpdateHeading('Blog');
     });
 

@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.env.Environment;
 import org.springframework.nativex.hint.TypeHint;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import tech.jhipster.config.DefaultProfileUtil;
 import tech.jhipster.config.JHipsterConstants;
 
@@ -20,11 +19,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
-@TypeHint(types = {
-    org.HdrHistogram.Histogram.class,
-    org.HdrHistogram.ConcurrentHistogram.class,
-    JwtDecoder.class
-})
+@TypeHint(
+    types = {
+        org.HdrHistogram.Histogram.class,
+        org.HdrHistogram.ConcurrentHistogram.class
+    })
 @SpringBootApplication
 @EnableConfigurationProperties({ApplicationProperties.class})
 public class NgfluxApp {

@@ -14,24 +14,14 @@ import {
 describe('Post e2e test', () => {
   const postPageUrl = '/post';
   const postPageUrlPattern = new RegExp('/post(\\?.*)?$');
-  const username = Cypress.env('E2E_USERNAME') ?? 'admin';
-  const password = Cypress.env('E2E_PASSWORD') ?? 'admin';
+  const username = Cypress.env('E2E_USERNAME') ?? 'user';
+  const password = Cypress.env('E2E_PASSWORD') ?? 'user';
   const postSample = { title: 'B2C', content: 'Li4vZmFrZS1kYXRhL2Jsb2IvaGlwc3Rlci50eHQ=', date: '2021-09-27T23:50:30.555Z' };
 
   let post: any;
 
   beforeEach(() => {
-    cy.getOauth2Data();
-    cy.get('@oauth2Data').then(oauth2Data => {
-      cy.oauthLogin(oauth2Data, username, password);
-    });
-    cy.intercept('GET', '/api/posts').as('entitiesRequest');
-    cy.visit('');
-    cy.get(entityItemSelector).should('exist');
-  });
-
-  beforeEach(() => {
-    Cypress.Cookies.preserveOnce('XSRF-TOKEN', 'JSESSIONID');
+    cy.login(username, password);
   });
 
   beforeEach(() => {
@@ -49,11 +39,6 @@ describe('Post e2e test', () => {
         post = undefined;
       });
     }
-  });
-
-  afterEach(() => {
-    cy.oauthLogout();
-    cy.clearCache();
   });
 
   it('Posts menu should load Posts page', () => {
@@ -78,11 +63,11 @@ describe('Post e2e test', () => {
       });
 
       it('should load create Post page', () => {
-        cy.get(entityCreateButtonSelector).click({ force: true });
+        cy.get(entityCreateButtonSelector).click();
         cy.url().should('match', new RegExp('/post/new$'));
         cy.getEntityCreateUpdateHeading('Post');
         cy.get(entityCreateSaveButtonSelector).should('exist');
-        cy.get(entityCreateCancelButtonSelector).click({ force: true });
+        cy.get(entityCreateCancelButtonSelector).click();
         cy.wait('@entitiesRequest').then(({ response }) => {
           expect(response!.statusCode).to.equal(200);
         });
@@ -123,7 +108,7 @@ describe('Post e2e test', () => {
       it('detail button click should load details Post page', () => {
         cy.get(entityDetailsButtonSelector).first().click();
         cy.getEntityDetailsHeading('post');
-        cy.get(entityDetailsBackButtonSelector).click({ force: true });
+        cy.get(entityDetailsBackButtonSelector).click();
         cy.wait('@entitiesRequest').then(({ response }) => {
           expect(response!.statusCode).to.equal(200);
         });
@@ -134,7 +119,7 @@ describe('Post e2e test', () => {
         cy.get(entityEditButtonSelector).first().click();
         cy.getEntityCreateUpdateHeading('Post');
         cy.get(entityCreateSaveButtonSelector).should('exist');
-        cy.get(entityCreateCancelButtonSelector).click({ force: true });
+        cy.get(entityCreateCancelButtonSelector).click();
         cy.wait('@entitiesRequest').then(({ response }) => {
           expect(response!.statusCode).to.equal(200);
         });
@@ -144,7 +129,7 @@ describe('Post e2e test', () => {
       it('last delete button click should delete instance of Post', () => {
         cy.get(entityDeleteButtonSelector).last().click();
         cy.getEntityDeleteDialogHeading('post').should('exist');
-        cy.get(entityConfirmDeleteButtonSelector).click({ force: true });
+        cy.get(entityConfirmDeleteButtonSelector).click();
         cy.wait('@deleteEntityRequest').then(({ response }) => {
           expect(response!.statusCode).to.equal(204);
         });
@@ -161,7 +146,7 @@ describe('Post e2e test', () => {
   describe('new Post page', () => {
     beforeEach(() => {
       cy.visit(`${postPageUrl}`);
-      cy.get(entityCreateButtonSelector).click({ force: true });
+      cy.get(entityCreateButtonSelector).click();
       cy.getEntityCreateUpdateHeading('Post');
     });
 

@@ -6,12 +6,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
 
 public class ReactiveSqlTestContainerExtension implements BeforeAllCallback {
 
     private static AtomicBoolean started = new AtomicBoolean(false);
 
-    private static PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:13.5")
+    private static PostgreSQLContainer<?> container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:14.1"))
         .withDatabaseName("Postgres")
         .withTmpFs(Collections.singletonMap("/testtmpfs", "rw"));
 

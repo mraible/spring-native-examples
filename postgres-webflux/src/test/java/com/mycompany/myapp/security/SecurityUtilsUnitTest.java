@@ -80,14 +80,14 @@ class SecurityUtilsUnitTest {
         );
         Boolean hasCurrentUserThisAuthority = SecurityUtils
             .hasCurrentUserNoneOfAuthorities(AuthoritiesConstants.USER, AuthoritiesConstants.ADMIN)
-            .subscriberContext(context)
+            .contextWrite(context)
             .block();
         assertThat(hasCurrentUserThisAuthority).isFalse();
 
         hasCurrentUserThisAuthority =
             SecurityUtils
                 .hasCurrentUserNoneOfAuthorities(AuthoritiesConstants.ANONYMOUS, AuthoritiesConstants.ADMIN)
-                .subscriberContext(context)
+                .contextWrite(context)
                 .block();
         assertThat(hasCurrentUserThisAuthority).isTrue();
     }
@@ -101,12 +101,11 @@ class SecurityUtilsUnitTest {
         );
         Boolean hasCurrentUserThisAuthority = SecurityUtils
             .hasCurrentUserThisAuthority(AuthoritiesConstants.USER)
-            .subscriberContext(context)
+            .contextWrite(context)
             .block();
         assertThat(hasCurrentUserThisAuthority).isTrue();
 
-        hasCurrentUserThisAuthority =
-            SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN).subscriberContext(context).block();
+        hasCurrentUserThisAuthority = SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN).contextWrite(context).block();
         assertThat(hasCurrentUserThisAuthority).isFalse();
     }
 }

@@ -19,15 +19,15 @@ export class BlogComponent implements OnInit {
   loadAll(): void {
     this.isLoading = true;
 
-    this.blogService.query().subscribe(
-      (res: HttpResponse<IBlog[]>) => {
+    this.blogService.query().subscribe({
+      next: (res: HttpResponse<IBlog[]>) => {
         this.isLoading = false;
         this.blogs = res.body ?? [];
       },
-      () => {
+      error: () => {
         this.isLoading = false;
-      }
-    );
+      },
+    });
   }
 
   ngOnInit(): void {

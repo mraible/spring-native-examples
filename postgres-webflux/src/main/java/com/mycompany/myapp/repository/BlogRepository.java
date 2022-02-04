@@ -21,7 +21,9 @@ public interface BlogRepository extends ReactiveCrudRepository<Blog, Long>, Blog
     @Query("SELECT * FROM blog entity WHERE entity.user_id IS NULL")
     Flux<Blog> findAllWhereUserIsNull();
 
-    // just to avoid having unambigous methods
+    @Override
+    <S extends Blog> Mono<S> save(S entity);
+
     @Override
     Flux<Blog> findAll();
 
@@ -29,11 +31,17 @@ public interface BlogRepository extends ReactiveCrudRepository<Blog, Long>, Blog
     Mono<Blog> findById(Long id);
 
     @Override
-    <S extends Blog> Mono<S> save(S entity);
+    Mono<Void> deleteById(Long id);
 }
 
 interface BlogRepositoryInternal {
     <S extends Blog> Mono<S> save(S entity);
+
     Flux<Blog> findAllBy(Pageable pageable);
+
+    Flux<Blog> findAll();
+
+    Mono<Blog> findById(Long id);
+
     Flux<Blog> findAllBy(Pageable pageable, Criteria criteria);
 }

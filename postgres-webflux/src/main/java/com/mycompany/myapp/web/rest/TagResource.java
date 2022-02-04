@@ -189,8 +189,8 @@ public class TagResource {
         return tagRepository
             .count()
             .zipWith(tagRepository.findAllBy(pageable).collectList())
-            .map(countWithEntities -> {
-                return ResponseEntity
+            .map(countWithEntities ->
+                ResponseEntity
                     .ok()
                     .headers(
                         PaginationUtil.generatePaginationHttpHeaders(
@@ -198,8 +198,8 @@ public class TagResource {
                             new PageImpl<>(countWithEntities.getT2(), pageable, countWithEntities.getT1())
                         )
                     )
-                    .body(countWithEntities.getT2());
-            });
+                    .body(countWithEntities.getT2())
+            );
     }
 
     /**

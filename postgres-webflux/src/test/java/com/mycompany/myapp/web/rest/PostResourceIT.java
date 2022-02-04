@@ -8,8 +8,8 @@ import static org.springframework.security.test.web.reactive.server.SecurityMock
 
 import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.domain.Post;
+import com.mycompany.myapp.repository.EntityManager;
 import com.mycompany.myapp.repository.PostRepository;
-import com.mycompany.myapp.service.EntityManager;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -39,7 +39,7 @@ import reactor.core.publisher.Mono;
  */
 @IntegrationTest
 @ExtendWith(MockitoExtension.class)
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = IntegrationTest.DEFAULT_ENTITY_TIMEOUT)
 @WithMockUser
 class PostResourceIT {
 

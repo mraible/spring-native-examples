@@ -1,7 +1,6 @@
 package com.mycompany.myapp.repository.rowmapper;
 
 import com.mycompany.myapp.domain.Post;
-import com.mycompany.myapp.service.ColumnConverter;
 import io.r2dbc.spi.Row;
 import java.time.Instant;
 import java.util.function.BiFunction;
