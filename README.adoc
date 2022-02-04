@@ -164,7 +164,7 @@ and has been detected on type org.springframework.web.client.RestTemplate
 
 . If using Spring MVC, swap Undertow dependencies for Tomcat (in `pom.xml`) and modify `WebConfigurer` to comment out `setLocationForStaticAssets(server)`.
 
-. Update main `App.java` to add hints for Micrometer
+. Update main `App.java` to add hints for Micrometer:
 +
 [source,java]
 ----
@@ -187,17 +187,11 @@ import org.springframework.nativex.hint.TypeHint;
     <version>1.6.5</version>
 </dependency>
 ----
-+ And update `jhipster-dependencies` to `7.6.1-SNAPSHOT` (since it specifies 1.6.5). With 1.6.2, the following error happens:
+And update `jhipster-dependencies` to `7.6.1-SNAPSHOT`. With v1.6.2, the following error happens:
 +
 ----
 Parameter 0 of constructor in org.springdoc.nativex.core.SpringDocHints
 required a bean of type 'org.springdoc.core.SwaggerUiConfigProperties' that could not be found.
-----
-+
-Swagger doesn't seem to work with WebFlux. In my browser's console, it says:
-+
-----
-Failed to load resource: the server responded with a status of 404 :8080/management/jhiopenapigroups
 ----
 
 . Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet], but you can make it work by adding files from https://github.com/liquibase/liquibase/pull/2005[this pull request] to your `src/main/resources/META-INF/native-image/liquibase` directory.
@@ -236,8 +230,11 @@ Without this change, the following error happens:
 org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceScriptDatabaseInitializer':
 Circular depends-on relationship between 'dataSourceScriptDatabaseInitializer' and 'liquibase'
 ----
+
 . Build with  `./mvnw package -Pnative,prod -DskipTests`
+
 . If you're using Spring WebFlux with R2DBC, we https://github.com/jhipster/generator-jhipster/pull/17277#issuecomment-993132173[haven't figured that one out yet].
+
 . If Spring MVC, add names to any `@RequestParam` and `@PathVariable` annotations.
 +
 [source,java]
@@ -265,18 +262,25 @@ Caused by: com.fasterxml.jackson.databind.JsonMappingException: Unable to perfor
 [com.mycompany.myapp.domain.Post.tags] - no session and settings disallow loading outside the Session
 (through reference chain: java.util.Collections$UnmodifiableRandomAccessList[0]->com.mycompany.myapp.domain.Post["tags"])
 ----
-- Several of JHipster's Administration features don't work: metrics, logs, API docs, and configuration.
+- Several of JHipster's Administration features don't work: metrics, logs, and configuration.
 - Metrics: `UnsupportedFeatureError: ThreadMXBean methods`
 - Logs: `/management/loggers` returns HTML instead of JSON
-- Configuration:
+- Configuration error:
 +
 ----
 org.springframework.http.converter.HttpMessageNotWritableException: No converter for [class org.springframework.boot.actuate.context.properties.ConfigurationPropertiesReportEndpoint$ApplicationConfigurationProperties] with preset Content-Type 'null'
 ----
-- H2 doesn't work
+- H2 doesn't work if you build with the `dev` profile:
 +
 ----
 java.lang.IllegalStateException: Failed to process lifecycle methods on bean definition with name 'h2TCPServer'
 ----
 +
-It might be possible to fix with a `@TypeHint` for `org.h2.tools.Server.class`. However, this class is not on the classpath by default.
+I tried adding the following to the `@TypeHint` in the main class, but it doesn't work.
++
+[source,java]
+----
+typeNames = {"org.h2.tools.Server", "org.h2.server.web.WebServlet"}
+----
++
+This class is not on the classpath by default. Maybe that has something to do with it?
