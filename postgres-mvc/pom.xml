@@ -154,6 +154,7 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-native</artifactId>
             <version>1.6.5</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-commons</artifactId>
