@@ -28,8 +28,7 @@ logging:
   level:
     root: ERROR
     io.netty: ERROR
-    org.springframework: DEBUG
-    liquibase: DEBUG
+    org.springframework: INFO
 management:
   endpoints:
     web:
