@@ -233,7 +233,7 @@ Circular depends-on relationship between 'dataSourceScriptDatabaseInitializer' a
 
 . Build with  `./mvnw package -Pnative,prod -DskipTests`
 
-. If you're using Spring WebFlux with R2DBC, we https://github.com/jhipster/generator-jhipster/pull/17277#issuecomment-993132173[haven't figured that one out yet].
+. If you're using Spring WebFlux with R2DBC, we https://github.com/jhipster/generator-jhipster/issues/17271#issuecomment-1029581856[haven't figured that one out yet].
 
 . If Spring MVC, add names to any `@RequestParam` and `@PathVariable` annotations.
 +
