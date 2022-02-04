@@ -28,7 +28,8 @@ logging:
   level:
     root: ERROR
     io.netty: ERROR
-    org.springframework: INFO
+    org.springframework: DEBUG
+    liquibase: DEBUG
 management:
   endpoints:
     web:
@@ -113,7 +114,6 @@ spring:
       repositories:
         bootstrap-mode: deferred
   jpa:
-    defer-datasource-initialization: true
     open-in-view: false
     properties:
       hibernate.jdbc.time_zone: UTC
@@ -168,6 +168,9 @@ spring:
             client-id: web_app
             client-secret: web_app
             scope: openid,profile,email
+  sql:
+    init:
+      mode: never
 
 server:
   servlet:

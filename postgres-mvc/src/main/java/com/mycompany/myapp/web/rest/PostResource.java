@@ -77,7 +77,7 @@ public class PostResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/posts/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody Post post)
+    public ResponseEntity<Post> updatePost(@PathVariable(name = "id", value = "id", required = false) final Long id, @Valid @RequestBody Post post)
         throws URISyntaxException {
         log.debug("REST request to update Post : {}, {}", id, post);
         if (post.getId() == null) {
@@ -111,7 +111,7 @@ public class PostResource {
      */
     @PatchMapping(value = "/posts/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<Post> partialUpdatePost(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(name = "id", value = "id", required = false) final Long id,
         @NotNull @RequestBody Post post
     ) throws URISyntaxException {
         log.debug("REST request to partial update Post partially : {}, {}", id, post);
@@ -159,7 +159,7 @@ public class PostResource {
     @GetMapping("/posts")
     public ResponseEntity<List<Post>> getAllPosts(
         @org.springdoc.api.annotations.ParameterObject Pageable pageable,
-        @RequestParam(required = false, defaultValue = "false") boolean eagerload
+        @RequestParam(name = "eagerload", required = false, defaultValue = "false") boolean eagerload
     ) {
         log.debug("REST request to get a page of Posts");
         Page<Post> page;
@@ -179,7 +179,7 @@ public class PostResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the post, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/posts/{id}")
-    public ResponseEntity<Post> getPost(@PathVariable Long id) {
+    public ResponseEntity<Post> getPost(@PathVariable("id") Long id) {
         log.debug("REST request to get Post : {}", id);
         Optional<Post> post = postRepository.findOneWithEagerRelationships(id);
         return ResponseUtil.wrapOrNotFound(post);
@@ -192,7 +192,7 @@ public class PostResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/posts/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePost(@PathVariable("id") Long id) {
         log.debug("REST request to delete Post : {}", id);
         postRepository.deleteById(id);
         return ResponseEntity
