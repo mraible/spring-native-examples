@@ -24,11 +24,6 @@ springdoc:
   api-docs:
     enabled: false
 ---
-logging:
-  level:
-    root: ERROR
-    io.netty: ERROR
-    org.springframework: INFO
 management:
   endpoints:
     web:
@@ -52,6 +47,8 @@ management:
   info:
     git:
       mode: full
+    env:
+      enabled: true
   health:
     mail:
       enabled: false # When using the MailService, configure an SMTP server and set this to true
@@ -183,6 +180,7 @@ jhipster:
       audience:
         - account
         - api://default
+
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
@@ -193,3 +191,10 @@ jhipster:
 # ===================================================================
 
 # application:
+
+---
+logging:
+  level:
+    root: ERROR
+    io.netty: ERROR
+    org.springframework: INFO

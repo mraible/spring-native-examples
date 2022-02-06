@@ -29,16 +29,16 @@
     "docker:others:down": "npm run docker:keycloak:down",
     "predocker:others:up": "",
     "docker:others:up": "npm run docker:keycloak:up",
-    "java:docker": "./mvnw -ntp verify -DskipTests -Pprod jib:dockerBuild",
+    "java:docker": "./mvnw -ntp verify -DskipTests -Pnative,prod jib:dockerBuild",
     "java:docker:arm64": "npm run java:docker -- -Djib-maven-plugin.architecture=arm64",
-    "java:docker:dev": "npm run java:docker -- -Pdev,webapp",
-    "java:docker:prod": "npm run java:docker -- -Pprod",
+    "java:docker:dev": "npm run java:docker -- -Pnative,dev,webapp",
+    "java:docker:prod": "npm run java:docker -- -Pnative,prod",
     "java:jar": "./mvnw -ntp verify -DskipTests --batch-mode",
-    "java:jar:dev": "npm run java:jar -- -Pdev,webapp",
-    "java:jar:prod": "npm run java:jar -- -Pprod",
+    "java:jar:dev": "npm run java:jar -- -Pnative,dev,webapp",
+    "java:jar:prod": "npm run java:jar -- -Pnative,prod",
     "java:war": "./mvnw -ntp verify -DskipTests --batch-mode -Pwar",
-    "java:war:dev": "npm run java:war -- -Pdev,webapp",
-    "java:war:prod": "npm run java:war -- -Pprod",
+    "java:war:dev": "npm run java:war -- -Pnative,dev,webapp",
+    "java:war:prod": "npm run java:war -- -Pnative,prod",
     "prettier:check": "prettier --check \"{,src/**/}*.{md,json,yml,html,java}\"",
     "prettier:format": "prettier --write \"{,src/**/}*.{md,json,yml,html,java}\""
   },
@@ -48,7 +48,6 @@
     "packaging": "jar"
   },
   "devDependencies": {
-    "generator-jhipster": "7.6.0",
     "prettier": "2.5.1",
     "prettier-plugin-java": "1.6.1",
     "prettier-plugin-packagejson": "2.2.15"

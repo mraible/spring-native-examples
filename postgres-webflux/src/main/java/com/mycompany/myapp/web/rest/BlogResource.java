@@ -84,7 +84,7 @@ public class BlogResource {
      */
     @PutMapping("/blogs/{id}")
     public Mono<ResponseEntity<Blog>> updateBlog(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(name = "id", value = "id", required = false) final Long id,
         @Valid @RequestBody Blog blog
     ) throws URISyntaxException {
         log.debug("REST request to update Blog : {}, {}", id, blog);
@@ -127,7 +127,7 @@ public class BlogResource {
      */
     @PatchMapping(value = "/blogs/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<Blog>> partialUpdateBlog(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(name = "id", value = "id", required = false) final Long id,
         @NotNull @RequestBody Blog blog
     ) throws URISyntaxException {
         log.debug("REST request to partial update Blog partially : {}, {}", id, blog);
@@ -198,7 +198,7 @@ public class BlogResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the blog, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/blogs/{id}")
-    public Mono<ResponseEntity<Blog>> getBlog(@PathVariable Long id) {
+    public Mono<ResponseEntity<Blog>> getBlog(@PathVariable("id") Long id) {
         log.debug("REST request to get Blog : {}", id);
         Mono<Blog> blog = blogRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(blog);
@@ -212,7 +212,7 @@ public class BlogResource {
      */
     @DeleteMapping("/blogs/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public Mono<ResponseEntity<Void>> deleteBlog(@PathVariable Long id) {
+    public Mono<ResponseEntity<Void>> deleteBlog(@PathVariable("id") Long id) {
         log.debug("REST request to delete Blog : {}", id);
         return blogRepository
             .deleteById(id)

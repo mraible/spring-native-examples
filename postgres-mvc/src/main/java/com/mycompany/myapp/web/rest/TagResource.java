@@ -77,8 +77,10 @@ public class TagResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/tags/{id}")
-    public ResponseEntity<Tag> updateTag(@PathVariable(name="id", value = "id", required = false) final Long id, @Valid @RequestBody Tag tag)
-        throws URISyntaxException {
+    public ResponseEntity<Tag> updateTag(
+        @PathVariable(name = "id", value = "id", required = false) final Long id,
+        @Valid @RequestBody Tag tag
+    ) throws URISyntaxException {
         log.debug("REST request to update Tag : {}, {}", id, tag);
         if (tag.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -110,8 +112,10 @@ public class TagResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/tags/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Tag> partialUpdateTag(@PathVariable(name="id", value = "id", required = false) final Long id, @NotNull @RequestBody Tag tag)
-        throws URISyntaxException {
+    public ResponseEntity<Tag> partialUpdateTag(
+        @PathVariable(name = "id", value = "id", required = false) final Long id,
+        @NotNull @RequestBody Tag tag
+    ) throws URISyntaxException {
         log.debug("REST request to partial update Tag partially : {}, {}", id, tag);
         if (tag.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");

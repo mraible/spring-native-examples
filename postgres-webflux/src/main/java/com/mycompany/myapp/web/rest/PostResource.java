@@ -92,7 +92,7 @@ public class PostResource {
      */
     @PutMapping("/posts/{id}")
     public Mono<ResponseEntity<Post>> updatePost(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(name = "id", value = "id", required = false) final Long id,
         @Valid @RequestBody Post post
     ) throws URISyntaxException {
         log.debug("REST request to update Post : {}, {}", id, post);
@@ -135,7 +135,7 @@ public class PostResource {
      */
     @PatchMapping(value = "/posts/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<Post>> partialUpdatePost(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(name = "id", value = "id", required = false) final Long id,
         @NotNull @RequestBody Post post
     ) throws URISyntaxException {
         log.debug("REST request to partial update Post partially : {}, {}", id, post);
@@ -193,7 +193,7 @@ public class PostResource {
     public Mono<ResponseEntity<List<Post>>> getAllPosts(
         @org.springdoc.api.annotations.ParameterObject Pageable pageable,
         ServerHttpRequest request,
-        @RequestParam(required = false, defaultValue = "false") boolean eagerload
+        @RequestParam(name = "eagerload", required = false, defaultValue = "false") boolean eagerload
     ) {
         log.debug("REST request to get a page of Posts");
         return postRepository
@@ -219,7 +219,7 @@ public class PostResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the post, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/posts/{id}")
-    public Mono<ResponseEntity<Post>> getPost(@PathVariable Long id) {
+    public Mono<ResponseEntity<Post>> getPost(@PathVariable("id") Long id) {
         log.debug("REST request to get Post : {}", id);
         Mono<Post> post = postRepository.findOneWithEagerRelationships(id);
         return ResponseUtil.wrapOrNotFound(post);
@@ -233,7 +233,7 @@ public class PostResource {
      */
     @DeleteMapping("/posts/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public Mono<ResponseEntity<Void>> deletePost(@PathVariable Long id) {
+    public Mono<ResponseEntity<Void>> deletePost(@PathVariable("id") Long id) {
         log.debug("REST request to delete Post : {}", id);
         return postRepository
             .deleteById(id)

@@ -3,7 +3,12 @@
     "applicationType": "monolith",
     "authenticationType": "oauth2",
     "baseName": "Postgres",
-    "blueprints": [],
+    "blueprints": [
+      {
+        "name": "generator-jhipster-native",
+        "version": "0.0.0"
+      }
+    ],
     "buildTool": "maven",
     "cacheProvider": "no",
     "clientFramework": "angularX",
@@ -29,7 +34,12 @@
     "messageBroker": false,
     "monorepository": true,
     "nativeLanguage": "en",
-    "otherModules": [],
+    "otherModules": [
+      {
+        "name": "generator-jhipster-native",
+        "version": "0.0.0"
+      }
+    ],
     "packageName": "com.mycompany.myapp",
     "pages": [],
     "prodDatabaseType": "postgresql",
@@ -42,6 +52,7 @@
     "skipClient": false,
     "skipCommitHook": true,
     "skipFakeData": false,
+    "skipJhipsterDependencies": true,
     "skipServer": false,
     "skipUserManagement": true,
     "testFrameworks": ["cypress"],
