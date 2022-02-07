@@ -257,12 +257,7 @@ public ResponseEntity<?> logout(HttpServletRequest request, @AuthenticationPrinc
     OidcIdToken idToken = oidcUser.getIdToken();
 ----
 
-. Caching is https://github.com/spring-projects-experimental/spring-native/issues/465[not supported yet]. Comment out the annotations at the top of your `CacheConfiguration` class. Disable Hibernate's 2nd level cache in `application.yml` too.
-+
-[source,yaml]
-----
-hibernate.cache.use_second_level_cache: false
-----
+. Caching is https://github.com/spring-projects-experimental/spring-native/issues/465[not supported yet]. The only workaround I've found so far is to re-generate your app with `"cacheProvider": "no"` in your `.yo-rc.json`.
 
 . Build with  `./mvnw package -Pnative,prod -DskipTests`
 
