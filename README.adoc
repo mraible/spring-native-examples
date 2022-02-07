@@ -231,9 +231,14 @@ org.springframework.beans.factory.BeanCreationException: Error creating bean wit
 Circular depends-on relationship between 'dataSourceScriptDatabaseInitializer' and 'liquibase'
 ----
 
-. Build with  `./mvnw package -Pnative,prod -DskipTests`
-
-. If you're using Spring WebFlux with R2DBC, we https://github.com/jhipster/generator-jhipster/issues/17271#issuecomment-1029581856[haven't figured that one out yet].
+. If you're using Spring WebFlux with R2DBC, you'll need to add `@Component` to your Impl classes and add `SimpleR2dbcRepository` to your type hints and `com.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry[]` as a typeName for Liquibase.
++
+----
+@TypeHint(types = {
+    ...
+    org.springframework.data.r2dbc.repository.support.SimpleR2dbcRepository.class
+}, typeNames = "com.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry[]")
+----
 
 . If Spring MVC, add names to any `@RequestParam` and `@PathVariable` annotations.
 +
@@ -252,16 +257,12 @@ public ResponseEntity<?> logout(HttpServletRequest request, @AuthenticationPrinc
     OidcIdToken idToken = oidcUser.getIdToken();
 ----
 
+. Build with  `./mvnw package -Pnative,prod -DskipTests`
+
 == Known Issues
 
 - `-DskipTests` is needed for both Spring MVC and WebFlux. This seems to be caused by Mockito.
-- Creating a new `Post` or `Tag` in the `postgres-mvc` project doesn't work. The error is:
-+
-----
-Caused by: com.fasterxml.jackson.databind.JsonMappingException: Unable to perform requested lazy initialization
-[com.mycompany.myapp.domain.Post.tags] - no session and settings disallow loading outside the Session
-(through reference chain: java.util.Collections$UnmodifiableRandomAccessList[0]->com.mycompany.myapp.domain.Post["tags"])
-----
+- Creating a new `Post` or `Tag` in the `postgres-mvc` project doesn't work. This is a [JHipster bug](https://github.com/jhipster/generator-jhipster/issues/17794) and doesn't seem to be related to Spring Native.
 - Several of JHipster's Administration features don't work: metrics, logs, and configuration.
 - Metrics: `UnsupportedFeatureError: ThreadMXBean methods`
 - Logs: `/management/loggers` returns HTML instead of JSON

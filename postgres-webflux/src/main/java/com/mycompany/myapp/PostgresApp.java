@@ -18,7 +18,16 @@ import org.springframework.core.env.Environment;
 import tech.jhipster.config.DefaultProfileUtil;
 import tech.jhipster.config.JHipsterConstants;
 
-@org.springframework.nativex.hint.TypeHint(types = { org.HdrHistogram.Histogram.class, org.HdrHistogram.ConcurrentHistogram.class })
+@org.springframework.nativex.hint.TypeHint(types = {
+    org.HdrHistogram.Histogram.class,
+    org.HdrHistogram.ConcurrentHistogram.class,
+    org.springframework.data.r2dbc.repository.support.SimpleR2dbcRepository.class,
+    liquibase.configuration.LiquibaseConfiguration.class,
+    com.zaxxer.hikari.HikariDataSource.class,
+    liquibase.change.core.LoadDataColumnConfig.class,
+    tech.jhipster.domain.util.FixedPostgreSQL10Dialect.class,
+    org.hibernate.type.TextType.class,
+}, typeNames = "com.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry[]")
 @SpringBootApplication
 @EnableConfigurationProperties({ LiquibaseProperties.class, ApplicationProperties.class })
 public class PostgresApp {
