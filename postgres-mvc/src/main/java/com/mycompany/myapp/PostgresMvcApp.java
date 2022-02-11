@@ -27,6 +27,7 @@ import tech.jhipster.config.JHipsterConstants;
         org.hibernate.type.TextType.class,
         org.HdrHistogram.Histogram.class,
         org.HdrHistogram.ConcurrentHistogram.class,
+        java.util.HashSet.class
     }
 )
 @SpringBootApplication
