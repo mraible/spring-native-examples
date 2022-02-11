@@ -207,13 +207,11 @@ required a bean of type 'org.springdoc.core.SwaggerUiConfigProperties' that coul
         com.zaxxer.hikari.HikariDataSource.class,
         liquibase.change.core.LoadDataColumnConfig.class,
         tech.jhipster.domain.util.FixedPostgreSQL10Dialect.class,
-        org.hibernate.type.TextType.class
+        org.hibernate.type.TextType.class,
     })
 ----
 
-. If you're using JPA, https://docs.jboss.org/hibernate/orm/5.4/topical/html_single/bytecode/BytecodeEnhancement.html#_build_time_enhancement[configure Hibernate build-time bytecode enhancement]. Add the plugin right after the `spring-aot-maven-plugin`.
-+
-In `application.yml`, turn off loading of SQL so Liquibase works:
+. If you're using JPA, add a type hint for `java.util.HashSet.class` and turn off loading of SQL in `application.yml` so Liquibase works:
 +
 [source,yaml]
 ----
@@ -257,12 +255,13 @@ public ResponseEntity<?> logout(HttpServletRequest request, @AuthenticationPrinc
     OidcIdToken idToken = oidcUser.getIdToken();
 ----
 
+. Caching is https://github.com/spring-projects-experimental/spring-native/issues/465[not supported yet]. The only workaround I've found so far is to re-generate your app with `"cacheProvider": "no"` in your `.yo-rc.json`.
+
 . Build with  `./mvnw package -Pnative,prod -DskipTests`
 
 == Known Issues
 
 - `-DskipTests` is needed for both Spring MVC and WebFlux. This seems to be caused by Mockito.
-- Creating a new `Post` or `Tag` in the `postgres-mvc` project doesn't work. This is a [JHipster bug](https://github.com/jhipster/generator-jhipster/issues/17794) and doesn't seem to be related to Spring Native.
 - Several of JHipster's Administration features don't work: metrics, logs, and configuration.
 - Metrics: `UnsupportedFeatureError: ThreadMXBean methods`
 - Logs: `/management/loggers` returns HTML instead of JSON
