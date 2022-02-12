@@ -3,8 +3,9 @@
 
 for app in spring-native-webflux spring-native-mvc angular-webflux postgres-webflux postgres-mvc
 do
- echo "Updating $app..."
- cd $app
- rm -rf *
- jhipster-native --with-entities --skip-jhipster-dependencies
+  echo "Updating $app..."
+  cd $app
+  rm -rf *
+  jhipster-native --with-entities --skip-jhipster-dependencies
+  ./mvnw package -DskipTests -Pprod,native
 done
