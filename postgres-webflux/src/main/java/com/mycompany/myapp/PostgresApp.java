@@ -25,7 +25,6 @@ import tech.jhipster.config.JHipsterConstants;
     liquibase.configuration.LiquibaseConfiguration.class,
     com.zaxxer.hikari.HikariDataSource.class,
     liquibase.change.core.LoadDataColumnConfig.class,
-    tech.jhipster.domain.util.FixedPostgreSQL10Dialect.class,
     org.hibernate.type.TextType.class,
 }, typeNames = "com.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry[]")
 @SpringBootApplication
