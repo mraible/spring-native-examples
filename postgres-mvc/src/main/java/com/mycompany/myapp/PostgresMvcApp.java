@@ -20,14 +20,14 @@ import tech.jhipster.config.JHipsterConstants;
 
 @org.springframework.nativex.hint.TypeHint(
     types = {
+        org.HdrHistogram.Histogram.class,
+        org.HdrHistogram.ConcurrentHistogram.class,
+        java.util.HashSet.class,
         liquibase.configuration.LiquibaseConfiguration.class,
         com.zaxxer.hikari.HikariDataSource.class,
         liquibase.change.core.LoadDataColumnConfig.class,
-        tech.jhipster.domain.util.FixedPostgreSQL10Dialect.class,
         org.hibernate.type.TextType.class,
-        org.HdrHistogram.Histogram.class,
-        org.HdrHistogram.ConcurrentHistogram.class,
-        java.util.HashSet.class
+        tech.jhipster.domain.util.FixedPostgreSQL10Dialect.class,
     }
 )
 @SpringBootApplication
