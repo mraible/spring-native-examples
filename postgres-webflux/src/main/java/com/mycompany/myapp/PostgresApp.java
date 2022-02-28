@@ -26,6 +26,7 @@ import tech.jhipster.config.JHipsterConstants;
     com.zaxxer.hikari.HikariDataSource.class,
     liquibase.change.core.LoadDataColumnConfig.class,
     org.hibernate.type.TextType.class,
+    java.util.HashSet.class
 }, typeNames = "com.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry[]")
 @SpringBootApplication
 @EnableConfigurationProperties({ LiquibaseProperties.class, ApplicationProperties.class })

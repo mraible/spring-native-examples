@@ -25,7 +25,7 @@
     "docker:db:up": "echo \"Docker for db no not configured for application jhipster\"",
     "docker:keycloak:down": "docker-compose -f src/main/docker/keycloak.yml down -v --remove-orphans",
     "docker:keycloak:up": "docker-compose -f src/main/docker/keycloak.yml up -d",
-    "docker:others:await": "echo \"Waiting for keycloak to start\" && wait-on http-get://localhost:9080/auth/realms/jhipster -t 30000 && echo \"keycloak started\" || echo \"keycloak not running, make sure oauth2 server is running\"",
+    "docker:others:await": "echo \"Waiting for keycloak to start\" && wait-on -t 180000 http-get://localhost:9080/auth/realms/jhipster && echo \"keycloak started\" || echo \"keycloak not running, make sure oauth2 server is running\"",
     "docker:others:down": "npm run docker:keycloak:down",
     "predocker:others:up": "",
     "docker:others:up": "npm run docker:keycloak:up",
@@ -55,7 +55,7 @@
     "prettier-plugin-packagejson": "2.2.15"
   },
   "engines": {
-    "node": ">=16.13.1"
+    "node": ">=16.14.0"
   },
   "cacheDirectories": [
     "node_modules"
