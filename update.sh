@@ -5,6 +5,7 @@ for app in spring-native-webflux spring-native-mvc angular-webflux postgres-webf
 do
   echo "Updating $app..."
   cd $app
+  setopt localoptions rmstarsilent
   rm -rf *
   jhipster-native --with-entities --skip-jhipster-dependencies
   ./mvnw package -DskipTests -Pprod,native

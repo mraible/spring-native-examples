@@ -18,7 +18,7 @@ services:
     ports:
       - 127.0.0.1:8080:8080
   postgres-postgresql:
-    image: postgres:14.1
+    image: postgres:14.2
     # volumes:
     #   - ~/volumes/jhipster/Postgres/postgresql/:/var/lib/postgresql/data/
     environment:

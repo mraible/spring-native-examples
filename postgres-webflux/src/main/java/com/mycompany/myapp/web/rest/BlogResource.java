@@ -173,12 +173,13 @@ public class BlogResource {
     /**
      * {@code GET  /blogs} : get all the blogs.
      *
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of blogs in body.
      */
     @GetMapping("/blogs")
-    public Mono<List<Blog>> getAllBlogs() {
+    public Mono<List<Blog>> getAllBlogs(@RequestParam(name = "eagerload", required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get all Blogs");
-        return blogRepository.findAll().collectList();
+        return blogRepository.findAllWithEagerRelationships().collectList();
     }
 
     /**
@@ -200,7 +201,7 @@ public class BlogResource {
     @GetMapping("/blogs/{id}")
     public Mono<ResponseEntity<Blog>> getBlog(@PathVariable("id") Long id) {
         log.debug("REST request to get Blog : {}", id);
-        Mono<Blog> blog = blogRepository.findById(id);
+        Mono<Blog> blog = blogRepository.findOneWithEagerRelationships(id);
         return ResponseUtil.wrapOrNotFound(blog);
     }
 

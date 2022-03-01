@@ -103,6 +103,21 @@ class BlogRepositoryInternalImpl extends SimpleR2dbcRepository<Blog, Long> imple
         return createQuery(null, where(EntityManager.ENTITY_ALIAS + ".id").is(id)).one();
     }
 
+    @Override
+    public Mono<Blog> findOneWithEagerRelationships(Long id) {
+        return findById(id);
+    }
+
+    @Override
+    public Flux<Blog> findAllWithEagerRelationships() {
+        return findAll();
+    }
+
+    @Override
+    public Flux<Blog> findAllWithEagerRelationships(Pageable page) {
+        return findAllBy(page);
+    }
+
     private Blog process(Row row, RowMetadata metadata) {
         Blog entity = blogMapper.apply(row, "e");
         entity.setUser(userMapper.apply(row, "user"));

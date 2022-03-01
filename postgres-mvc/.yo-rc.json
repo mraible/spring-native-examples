@@ -28,7 +28,7 @@
     "entities": ["Blog", "Post", "Tag"],
     "entitySuffix": "",
     "jhiPrefix": "jhi",
-    "jhipsterVersion": "7.6.0",
+    "jhipsterVersion": "7.7.0",
     "languages": ["en", "fr"],
     "lastLiquibaseTimestamp": 1632939293000,
     "messageBroker": false,

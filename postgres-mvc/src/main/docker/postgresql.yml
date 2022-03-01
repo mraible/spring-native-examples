@@ -2,7 +2,7 @@
 version: '3.8'
 services:
   postgresmvc-postgresql:
-    image: postgres:14.1
+    image: postgres:14.2
     # volumes:
     #   - ~/volumes/jhipster/PostgresMVC/postgresql/:/var/lib/postgresql/data/
     environment:

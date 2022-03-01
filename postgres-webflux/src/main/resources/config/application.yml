@@ -206,4 +206,9 @@ logging:
   level:
     root: ERROR
     io.netty: ERROR
-    org.springframework: INFO
+    org.springframework: WARN
+---
+spring:
+  sql:
+    init:
+      mode: never

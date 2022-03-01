@@ -193,7 +193,7 @@ public class PostResource {
     public Mono<ResponseEntity<List<Post>>> getAllPosts(
         @org.springdoc.api.annotations.ParameterObject Pageable pageable,
         ServerHttpRequest request,
-        @RequestParam(name = "eagerload", required = false, defaultValue = "false") boolean eagerload
+        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
     ) {
         log.debug("REST request to get a page of Posts");
         return postRepository
