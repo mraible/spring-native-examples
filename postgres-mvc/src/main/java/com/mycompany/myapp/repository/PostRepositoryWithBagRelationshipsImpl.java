@@ -4,8 +4,8 @@ import com.mycompany.myapp.domain.Post;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.hibernate.annotations.QueryHints;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
@@ -14,7 +14,7 @@ import org.springframework.data.domain.PageImpl;
  */
 public class PostRepositoryWithBagRelationshipsImpl implements PostRepositoryWithBagRelationships {
 
-    @Autowired
+    @PersistenceContext
     private EntityManager entityManager;
 
     @Override

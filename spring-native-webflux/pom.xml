@@ -86,7 +86,7 @@
         <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
         <sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
         <repackage.classifier/>
-        <spring-native.version>0.11.2</spring-native.version>
+        <spring-native.version>0.11.3</spring-native.version>
         <!-- jhipster-needle-maven-property -->
     </properties>
 
