@@ -38,7 +38,7 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
 ...
 
 <repackage.classifier/>
-<spring-native.version>0.11.2</spring-native.version>
+<spring-native.version>0.11.3</spring-native.version>
 ...
 
 <!-- If reactive, comment out boringssl. This allows Spring Native to build the image and gets around this error:
@@ -96,7 +96,7 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
     <id>native</id>
     <properties>
         <repackage.classifier>exec</repackage.classifier>
-        <native-buildtools.version>0.9.9</native-buildtools.version>
+        <native-buildtools.version>0.9.10</native-buildtools.version>
     </properties>
     <dependencies>
         <dependency>
@@ -184,14 +184,8 @@ import org.springframework.nativex.hint.TypeHint;
 <dependency>
     <groupId>org.springdoc</groupId>
     <artifactId>springdoc-openapi-native</artifactId>
-    <version>1.6.5</version>
+    <version>1.6.6</version>
 </dependency>
-----
-And update `jhipster-dependencies` to `7.6.1-SNAPSHOT`. With v1.6.2, the following error happens:
-+
-----
-Parameter 0 of constructor in org.springdoc.nativex.core.SpringDocHints
-required a bean of type 'org.springdoc.core.SwaggerUiConfigProperties' that could not be found.
 ----
 
 . Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet], but you can make it work by adding files from https://github.com/liquibase/liquibase/pull/2005[this pull request] to your `src/main/resources/META-INF/native-image/liquibase` directory.
