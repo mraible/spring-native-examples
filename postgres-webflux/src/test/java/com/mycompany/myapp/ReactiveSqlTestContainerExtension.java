@@ -12,7 +12,7 @@ public class ReactiveSqlTestContainerExtension implements BeforeAllCallback {
 
     private static AtomicBoolean started = new AtomicBoolean(false);
 
-    private static PostgreSQLContainer<?> container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:14.1"))
+    private static PostgreSQLContainer<?> container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:14.2"))
         .withDatabaseName("Postgres")
         .withTmpFs(Collections.singletonMap("/testtmpfs", "rw"));
 

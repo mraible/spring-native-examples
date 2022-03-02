@@ -15,6 +15,15 @@ import reactor.core.publisher.Mono;
 @SuppressWarnings("unused")
 @Repository
 public interface BlogRepository extends ReactiveCrudRepository<Blog, Long>, BlogRepositoryInternal {
+    @Override
+    Mono<Blog> findOneWithEagerRelationships(Long id);
+
+    @Override
+    Flux<Blog> findAllWithEagerRelationships();
+
+    @Override
+    Flux<Blog> findAllWithEagerRelationships(Pageable page);
+
     @Query("SELECT * FROM blog entity WHERE entity.user_id = :id")
     Flux<Blog> findByUser(Long id);
 
@@ -44,4 +53,12 @@ interface BlogRepositoryInternal {
     Mono<Blog> findById(Long id);
 
     Flux<Blog> findAllBy(Pageable pageable, Criteria criteria);
+
+    Mono<Blog> findOneWithEagerRelationships(Long id);
+
+    Flux<Blog> findAllWithEagerRelationships();
+
+    Flux<Blog> findAllWithEagerRelationships(Pageable page);
+
+    Mono<Void> deleteById(Long id);
 }

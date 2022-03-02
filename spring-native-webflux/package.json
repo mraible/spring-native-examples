@@ -14,18 +14,18 @@
     "backend:start": "./mvnw",
     "backend:unit:test": "./mvnw -ntp verify --batch-mode -Dlogging.level.ROOT=OFF -Dlogging.level.org.zalando=OFF -Dlogging.level.tech.jhipster=OFF -Dlogging.level.com.mycompany.myapp=OFF -Dlogging.level.org.springframework=OFF -Dlogging.level.org.springframework.web=OFF -Dlogging.level.org.springframework.security=OFF",
     "ci:backend:test": "npm run backend:info && npm run backend:doc:test && npm run backend:nohttp:test && npm run backend:unit:test -- -P$npm_package_config_default_environment",
-    "ci:e2e:package": "npm run java:$npm_package_config_packaging:$npm_package_config_default_environment -- -Pe2e -Denforcer.skip=true",
+    "ci:e2e:package": "npm run native-package",
     "ci:e2e:prepare": "npm run ci:e2e:prepare:docker",
     "ci:e2e:prepare:docker": "npm run docker:db:up && npm run docker:others:up && docker ps -a",
     "preci:e2e:server:start": "npm run docker:db:await --if-present && npm run docker:others:await --if-present",
-    "ci:e2e:server:start": "java -jar target/e2e.$npm_package_config_packaging --spring.profiles.active=$npm_package_config_default_environment -Dlogging.level.ROOT=OFF -Dlogging.level.org.zalando=OFF -Dlogging.level.tech.jhipster=OFF -Dlogging.level.com.mycompany.myapp=OFF -Dlogging.level.org.springframework=OFF -Dlogging.level.org.springframework.web=OFF -Dlogging.level.org.springframework.security=OFF --logging.level.org.springframework.web=ERROR",
+    "ci:e2e:server:start": "npm run native-start",
     "ci:e2e:teardown": "npm run ci:e2e:teardown:docker",
     "ci:e2e:teardown:docker": "npm run docker:db:down --if-present && npm run docker:others:down && docker ps -a",
     "docker:app:up": "docker-compose -f src/main/docker/app.yml up -d",
     "docker:db:up": "echo \"Docker for db no not configured for application jhipster\"",
     "docker:keycloak:down": "docker-compose -f src/main/docker/keycloak.yml down -v --remove-orphans",
     "docker:keycloak:up": "docker-compose -f src/main/docker/keycloak.yml up -d",
-    "docker:others:await": "echo \"Waiting for keycloak to start\" && wait-on http-get://localhost:9080/auth/realms/jhipster -t 30000 && echo \"keycloak started\" || echo \"keycloak not running, make sure oauth2 server is running\"",
+    "docker:others:await": "echo \"Waiting for keycloak to start\" && wait-on -t 180000 http-get://localhost:9080/auth/realms/jhipster && echo \"keycloak started\" || echo \"keycloak not running, make sure oauth2 server is running\"",
     "docker:others:down": "npm run docker:keycloak:down",
     "predocker:others:up": "",
     "docker:others:up": "npm run docker:keycloak:up",
@@ -39,6 +39,8 @@
     "java:war": "./mvnw -ntp verify -DskipTests --batch-mode -Pwar",
     "java:war:dev": "npm run java:war -- -Pdev,webapp",
     "java:war:prod": "npm run java:war -- -Pprod",
+    "native-package": "./mvnw package -Pnative,prod -DskipTests",
+    "native-start": "./target/native-executable",
     "prettier:check": "prettier --check \"{,src/**/}*.{md,json,yml,html,java}\"",
     "prettier:format": "prettier --write \"{,src/**/}*.{md,json,yml,html,java}\""
   },
@@ -48,13 +50,12 @@
     "packaging": "jar"
   },
   "devDependencies": {
-    "generator-jhipster": "7.6.0",
     "prettier": "2.5.1",
     "prettier-plugin-java": "1.6.1",
     "prettier-plugin-packagejson": "2.2.15"
   },
   "engines": {
-    "node": ">=16.13.1"
+    "node": ">=16.14.0"
   },
   "cacheDirectories": [
     "node_modules"

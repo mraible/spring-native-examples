@@ -84,7 +84,7 @@ public class BlogResource {
      */
     @PutMapping("/blogs/{id}")
     public Mono<ResponseEntity<Blog>> updateBlog(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(name = "id", value = "id", required = false) final Long id,
         @Valid @RequestBody Blog blog
     ) throws URISyntaxException {
         log.debug("REST request to update Blog : {}, {}", id, blog);
@@ -127,7 +127,7 @@ public class BlogResource {
      */
     @PatchMapping(value = "/blogs/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<Blog>> partialUpdateBlog(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(name = "id", value = "id", required = false) final Long id,
         @NotNull @RequestBody Blog blog
     ) throws URISyntaxException {
         log.debug("REST request to partial update Blog partially : {}, {}", id, blog);
@@ -173,12 +173,13 @@ public class BlogResource {
     /**
      * {@code GET  /blogs} : get all the blogs.
      *
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of blogs in body.
      */
     @GetMapping("/blogs")
-    public Mono<List<Blog>> getAllBlogs() {
+    public Mono<List<Blog>> getAllBlogs(@RequestParam(name = "eagerload", required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get all Blogs");
-        return blogRepository.findAll().collectList();
+        return blogRepository.findAllWithEagerRelationships().collectList();
     }
 
     /**
@@ -198,9 +199,9 @@ public class BlogResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the blog, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/blogs/{id}")
-    public Mono<ResponseEntity<Blog>> getBlog(@PathVariable Long id) {
+    public Mono<ResponseEntity<Blog>> getBlog(@PathVariable("id") Long id) {
         log.debug("REST request to get Blog : {}", id);
-        Mono<Blog> blog = blogRepository.findById(id);
+        Mono<Blog> blog = blogRepository.findOneWithEagerRelationships(id);
         return ResponseUtil.wrapOrNotFound(blog);
     }
 
@@ -212,7 +213,7 @@ public class BlogResource {
      */
     @DeleteMapping("/blogs/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public Mono<ResponseEntity<Void>> deleteBlog(@PathVariable Long id) {
+    public Mono<ResponseEntity<Void>> deleteBlog(@PathVariable("id") Long id) {
         log.debug("REST request to delete Blog : {}", id);
         return blogRepository
             .deleteById(id)

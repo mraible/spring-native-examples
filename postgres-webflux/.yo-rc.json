@@ -3,7 +3,12 @@
     "applicationType": "monolith",
     "authenticationType": "oauth2",
     "baseName": "Postgres",
-    "blueprints": [],
+    "blueprints": [
+      {
+        "name": "generator-jhipster-native",
+        "version": "1.0.0"
+      }
+    ],
     "buildTool": "maven",
     "cacheProvider": "no",
     "clientFramework": "angularX",
@@ -23,13 +28,18 @@
     "entities": ["Blog", "Post", "Tag"],
     "entitySuffix": "",
     "jhiPrefix": "jhi",
-    "jhipsterVersion": "7.6.0",
+    "jhipsterVersion": "7.7.0",
     "languages": ["en", "fr"],
     "lastLiquibaseTimestamp": 1632872631000,
     "messageBroker": false,
     "monorepository": true,
     "nativeLanguage": "en",
-    "otherModules": [],
+    "otherModules": [
+      {
+        "name": "generator-jhipster-native",
+        "version": "1.0.0"
+      }
+    ],
     "packageName": "com.mycompany.myapp",
     "pages": [],
     "prodDatabaseType": "postgresql",
@@ -42,6 +52,7 @@
     "skipClient": false,
     "skipCommitHook": true,
     "skipFakeData": false,
+    "skipJhipsterDependencies": true,
     "skipServer": false,
     "skipUserManagement": true,
     "testFrameworks": ["cypress"],

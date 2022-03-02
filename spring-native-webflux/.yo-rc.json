@@ -3,7 +3,12 @@
     "applicationType": "monolith",
     "authenticationType": "oauth2",
     "baseName": "jhipster",
-    "blueprints": [],
+    "blueprints": [
+      {
+        "name": "generator-jhipster-native",
+        "version": "1.0.0"
+      }
+    ],
     "buildTool": "maven",
     "cacheProvider": "no",
     "clientFramework": "no",
@@ -22,12 +27,17 @@
     "entities": [],
     "entitySuffix": "",
     "jhiPrefix": "jhi",
-    "jhipsterVersion": "7.6.0",
+    "jhipsterVersion": "7.7.0",
     "languages": ["en", "fr"],
     "messageBroker": false,
     "monorepository": true,
     "nativeLanguage": "en",
-    "otherModules": [],
+    "otherModules": [
+      {
+        "name": "generator-jhipster-native",
+        "version": "1.0.0"
+      }
+    ],
     "packageName": "com.mycompany.myapp",
     "pages": [],
     "prodDatabaseType": "no",
@@ -40,6 +50,7 @@
     "skipClient": true,
     "skipCommitHook": true,
     "skipFakeData": false,
+    "skipJhipsterDependencies": true,
     "skipServer": false,
     "skipUserManagement": true,
     "testFrameworks": [],

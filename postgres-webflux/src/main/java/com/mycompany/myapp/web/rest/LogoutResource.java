@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.WebSession;
@@ -27,18 +28,14 @@ public class LogoutResource {
     /**
      * {@code POST  /api/logout} : logout the current user.
      *
-     * @param idToken the ID token.
+     * @param oidcUser the OIDC user.
      * @param request a {@link ServerHttpRequest} request.
      * @param session the current {@link WebSession}.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and a body with a global logout URL.
      */
     @PostMapping("/api/logout")
-    public Mono<Map<String, String>> logout(
-        @AuthenticationPrincipal(expression = "idToken") OidcIdToken idToken,
-        ServerHttpRequest request,
-        WebSession session
-    ) {
-        return session.invalidate().then(this.registration.map(oidc -> prepareLogoutUri(request, oidc, idToken)));
+    public Mono<Map<String, String>> logout(@AuthenticationPrincipal OidcUser oidcUser, ServerHttpRequest request, WebSession session) {
+        return session.invalidate().then(this.registration.map(oidc -> prepareLogoutUri(request, oidc, oidcUser.getIdToken())));
     }
 
     private Map<String, String> prepareLogoutUri(ServerHttpRequest request, ClientRegistration clientRegistration, OidcIdToken idToken) {

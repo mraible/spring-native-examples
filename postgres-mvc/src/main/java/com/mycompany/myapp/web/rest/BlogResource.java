@@ -71,8 +71,10 @@ public class BlogResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/blogs/{id}")
-    public ResponseEntity<Blog> updateBlog(@PathVariable(name = "id", value = "id", required = false) final Long id, @Valid @RequestBody Blog blog)
-        throws URISyntaxException {
+    public ResponseEntity<Blog> updateBlog(
+        @PathVariable(name = "id", value = "id", required = false) final Long id,
+        @Valid @RequestBody Blog blog
+    ) throws URISyntaxException {
         log.debug("REST request to update Blog : {}, {}", id, blog);
         if (blog.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -105,7 +107,7 @@ public class BlogResource {
      */
     @PatchMapping(value = "/blogs/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<Blog> partialUpdateBlog(
-        @PathVariable(name="id", value = "id", required = false) final Long id,
+        @PathVariable(name = "id", value = "id", required = false) final Long id,
         @NotNull @RequestBody Blog blog
     ) throws URISyntaxException {
         log.debug("REST request to partial update Blog partially : {}, {}", id, blog);
@@ -143,12 +145,13 @@ public class BlogResource {
     /**
      * {@code GET  /blogs} : get all the blogs.
      *
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of blogs in body.
      */
     @GetMapping("/blogs")
-    public List<Blog> getAllBlogs() {
+    public List<Blog> getAllBlogs(@RequestParam(name = "eagerload", required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get all Blogs");
-        return blogRepository.findAll();
+        return blogRepository.findAllWithEagerRelationships();
     }
 
     /**
@@ -160,7 +163,7 @@ public class BlogResource {
     @GetMapping("/blogs/{id}")
     public ResponseEntity<Blog> getBlog(@PathVariable("id") Long id) {
         log.debug("REST request to get Blog : {}", id);
-        Optional<Blog> blog = blogRepository.findById(id);
+        Optional<Blog> blog = blogRepository.findOneWithEagerRelationships(id);
         return ResponseUtil.wrapOrNotFound(blog);
     }
 

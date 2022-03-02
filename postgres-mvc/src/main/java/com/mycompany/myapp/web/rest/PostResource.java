@@ -77,8 +77,10 @@ public class PostResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/posts/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable(name = "id", value = "id", required = false) final Long id, @Valid @RequestBody Post post)
-        throws URISyntaxException {
+    public ResponseEntity<Post> updatePost(
+        @PathVariable(name = "id", value = "id", required = false) final Long id,
+        @Valid @RequestBody Post post
+    ) throws URISyntaxException {
         log.debug("REST request to update Post : {}, {}", id, post);
         if (post.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -159,7 +161,7 @@ public class PostResource {
     @GetMapping("/posts")
     public ResponseEntity<List<Post>> getAllPosts(
         @org.springdoc.api.annotations.ParameterObject Pageable pageable,
-        @RequestParam(name = "eagerload", required = false, defaultValue = "false") boolean eagerload
+        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
     ) {
         log.debug("REST request to get a page of Posts");
         Page<Post> page;

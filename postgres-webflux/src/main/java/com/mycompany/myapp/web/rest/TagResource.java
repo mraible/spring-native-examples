@@ -91,8 +91,10 @@ public class TagResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/tags/{id}")
-    public Mono<ResponseEntity<Tag>> updateTag(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody Tag tag)
-        throws URISyntaxException {
+    public Mono<ResponseEntity<Tag>> updateTag(
+        @PathVariable(name = "id", value = "id", required = false) final Long id,
+        @Valid @RequestBody Tag tag
+    ) throws URISyntaxException {
         log.debug("REST request to update Tag : {}, {}", id, tag);
         if (tag.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -133,7 +135,7 @@ public class TagResource {
      */
     @PatchMapping(value = "/tags/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<Tag>> partialUpdateTag(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(name = "id", value = "id", required = false) final Long id,
         @NotNull @RequestBody Tag tag
     ) throws URISyntaxException {
         log.debug("REST request to partial update Tag partially : {}, {}", id, tag);
@@ -209,7 +211,7 @@ public class TagResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the tag, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/tags/{id}")
-    public Mono<ResponseEntity<Tag>> getTag(@PathVariable Long id) {
+    public Mono<ResponseEntity<Tag>> getTag(@PathVariable("id") Long id) {
         log.debug("REST request to get Tag : {}", id);
         Mono<Tag> tag = tagRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(tag);
@@ -223,7 +225,7 @@ public class TagResource {
      */
     @DeleteMapping("/tags/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public Mono<ResponseEntity<Void>> deleteTag(@PathVariable Long id) {
+    public Mono<ResponseEntity<Void>> deleteTag(@PathVariable("id") Long id) {
         log.debug("REST request to delete Tag : {}", id);
         return tagRepository
             .deleteById(id)

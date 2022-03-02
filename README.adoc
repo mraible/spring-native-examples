@@ -12,7 +12,11 @@ This repository contains five apps we (https://github.com/joshlong[@joshlong] an
 - `postgres-webflux` - Angular, WebFlux, R2DBC + PostgreSQL
 - `postgres-mvc` - Angular, Spring MVC, JPA + PostgreSQL
 
-You should be able to create a JHipster monolith with OIDC, then make the following changes.
+If you already have a JHipster app with OIDC, you can make the changes below to make it work with Spring Native.
+
+====
+⚡️ You can also use the https://github.com/jhipster/generator-jhipster-native[JHipster Native blueprint] to generate an app with all of these changes already included!
+====
 
 . Modify `pom.xml` to add Spring Native support:
 +
@@ -38,7 +42,7 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
 ...
 
 <repackage.classifier/>
-<spring-native.version>0.11.2</spring-native.version>
+<spring-native.version>0.11.3</spring-native.version>
 ...
 
 <!-- If reactive, comment out boringssl. This allows Spring Native to build the image and gets around this error:
@@ -96,7 +100,7 @@ You should be able to create a JHipster monolith with OIDC, then make the follow
     <id>native</id>
     <properties>
         <repackage.classifier>exec</repackage.classifier>
-        <native-buildtools.version>0.9.9</native-buildtools.version>
+        <native-buildtools.version>0.9.10</native-buildtools.version>
     </properties>
     <dependencies>
         <dependency>
@@ -142,7 +146,16 @@ logging:
   level:
     root: ERROR
     io.netty: ERROR
-    org.springframework: INFO
+    liquibase: ERROR
+    org.hibernate: ERROR
+    org.springframework: ERROR
+    com.zaxxer.hikari: ERROR
+    org.apache.catalina: ERROR
+    org.apache.tomcat: ERROR
+    tech.jhipster.config: ERROR
+    jdk.event.security: ERROR
+    java.net: ERROR
+    sun.net.www: ERROR
 ----
 
 . There's an issue when using Spring WebFlux if you don't use `-DskipTests` when running `./mvnw package -Pnative`:
@@ -184,14 +197,8 @@ import org.springframework.nativex.hint.TypeHint;
 <dependency>
     <groupId>org.springdoc</groupId>
     <artifactId>springdoc-openapi-native</artifactId>
-    <version>1.6.5</version>
+    <version>1.6.6</version>
 </dependency>
-----
-And update `jhipster-dependencies` to `7.6.1-SNAPSHOT`. With v1.6.2, the following error happens:
-+
-----
-Parameter 0 of constructor in org.springdoc.nativex.core.SpringDocHints
-required a bean of type 'org.springdoc.core.SwaggerUiConfigProperties' that could not be found.
 ----
 
 . Liquibase is https://github.com/spring-projects-experimental/spring-native/issues/620[not supported yet], but you can make it work by adding files from https://github.com/liquibase/liquibase/pull/2005[this pull request] to your `src/main/resources/META-INF/native-image/liquibase` directory.
@@ -207,13 +214,11 @@ required a bean of type 'org.springdoc.core.SwaggerUiConfigProperties' that coul
         com.zaxxer.hikari.HikariDataSource.class,
         liquibase.change.core.LoadDataColumnConfig.class,
         tech.jhipster.domain.util.FixedPostgreSQL10Dialect.class,
-        org.hibernate.type.TextType.class
+        org.hibernate.type.TextType.class,
     })
 ----
 
-. If you're using JPA, https://docs.jboss.org/hibernate/orm/5.4/topical/html_single/bytecode/BytecodeEnhancement.html#_build_time_enhancement[configure Hibernate build-time bytecode enhancement]. Add the plugin right after the `spring-aot-maven-plugin`.
-+
-In `application.yml`, turn off loading of SQL so Liquibase works:
+. If you're using JPA, add a type hint for `java.util.HashSet.class` and turn off loading of SQL in `application.yml` so Liquibase works:
 +
 [source,yaml]
 ----
@@ -264,7 +269,6 @@ public ResponseEntity<?> logout(HttpServletRequest request, @AuthenticationPrinc
 == Known Issues
 
 - `-DskipTests` is needed for both Spring MVC and WebFlux. This seems to be caused by Mockito.
-- Creating a new `Post` or `Tag` in the `postgres-mvc` project doesn't work. This is a [JHipster bug](https://github.com/jhipster/generator-jhipster/issues/17794) that might be caused by the hibernate-enhance-maven-plugin.
 - Several of JHipster's Administration features don't work: metrics, logs, and configuration.
 - Metrics: `UnsupportedFeatureError: ThreadMXBean methods`
 - Logs: `/management/loggers` returns HTML instead of JSON

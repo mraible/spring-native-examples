@@ -26,6 +26,7 @@ import org.springframework.data.relational.core.sql.Table;
 import org.springframework.data.relational.repository.support.MappingRelationalEntityInformation;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.RowsFetchSpec;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -33,6 +34,7 @@ import reactor.core.publisher.Mono;
  * Spring Data SQL reactive custom repository implementation for the Tag entity.
  */
 @SuppressWarnings("unused")
+@Component
 class TagRepositoryInternalImpl extends SimpleR2dbcRepository<Tag, Long> implements TagRepositoryInternal {
 
     private final DatabaseClient db;

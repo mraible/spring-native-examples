@@ -24,11 +24,6 @@ springdoc:
   api-docs:
     enabled: false
 ---
-logging:
-  level:
-    root: ERROR
-    io.netty: ERROR
-    org.springframework: INFO
 management:
   endpoints:
     web:
@@ -64,6 +59,8 @@ management:
   info:
     git:
       mode: full
+    env:
+      enabled: true
   health:
     mail:
       enabled: false # When using the MailService, configure an SMTP server and set this to true
@@ -167,9 +164,6 @@ spring:
             client-id: web_app
             client-secret: web_app
             scope: openid,profile,email
-  sql:
-    init:
-      mode: never
 
 server:
   servlet:
@@ -222,6 +216,7 @@ jhipster:
       audience:
         - account
         - api://default
+
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
@@ -232,3 +227,24 @@ jhipster:
 # ===================================================================
 
 # application:
+
+---
+logging:
+  level:
+    root: ERROR
+    io.netty: ERROR
+    liquibase: ERROR
+    org.hibernate: ERROR
+    org.springframework: ERROR
+    com.zaxxer.hikari: ERROR
+    org.apache.catalina: ERROR
+    org.apache.tomcat: ERROR
+    tech.jhipster.config: ERROR
+    jdk.event.security: ERROR
+    java.net: ERROR
+    sun.net.www: ERROR
+---
+spring:
+  sql:
+    init:
+      mode: never

@@ -17,7 +17,7 @@ class TechnicalStructureTest {
     static final ArchRule respectsTechnicalArchitectureLayers = layeredArchitecture()
         .layer("Config").definedBy("..config..")
         .layer("Web").definedBy("..web..")
-        .layer("Service").definedBy("..service..")
+        .optionalLayer("Service").definedBy("..service..")
         .layer("Security").definedBy("..security..")
         .layer("Persistence").definedBy("..repository..")
         .layer("Domain").definedBy("..domain..")
@@ -25,9 +25,13 @@ class TechnicalStructureTest {
         .whereLayer("Config").mayNotBeAccessedByAnyLayer()
         .whereLayer("Web").mayOnlyBeAccessedByLayers("Config")
         .whereLayer("Service").mayOnlyBeAccessedByLayers("Web", "Config")
-        .whereLayer("Security").mayOnlyBeAccessedByLayers("Web", "Service", "Config")
+        .whereLayer("Security").mayOnlyBeAccessedByLayers("Config", "Service", "Web")
         .whereLayer("Persistence").mayOnlyBeAccessedByLayers("Service", "Security", "Web", "Config")
         .whereLayer("Domain").mayOnlyBeAccessedByLayers("Persistence", "Service", "Security", "Web", "Config")
 
-        .ignoreDependency(belongToAnyOf(PostgresApp.class), alwaysTrue());
+        .ignoreDependency(belongToAnyOf(PostgresApp.class), alwaysTrue())
+        .ignoreDependency(alwaysTrue(), belongToAnyOf(
+            com.mycompany.myapp.config.Constants.class,
+            com.mycompany.myapp.config.ApplicationProperties.class
+        ));
 }

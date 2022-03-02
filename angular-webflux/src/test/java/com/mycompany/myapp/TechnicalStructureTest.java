@@ -17,13 +17,16 @@ class TechnicalStructureTest {
     static final ArchRule respectsTechnicalArchitectureLayers = layeredArchitecture()
         .layer("Config").definedBy("..config..")
         .layer("Web").definedBy("..web..")
-        .layer("Service").definedBy("..service..")
+        .optionalLayer("Service").definedBy("..service..")
         .layer("Security").definedBy("..security..")
 
         .whereLayer("Config").mayNotBeAccessedByAnyLayer()
         .whereLayer("Web").mayOnlyBeAccessedByLayers("Config")
         .whereLayer("Service").mayOnlyBeAccessedByLayers("Web", "Config")
-        .whereLayer("Security").mayOnlyBeAccessedByLayers("Web", "Service", "Config")
+        .whereLayer("Security").mayOnlyBeAccessedByLayers("Config", "Service", "Web")
 
-        .ignoreDependency(belongToAnyOf(NgfluxApp.class), alwaysTrue());
+        .ignoreDependency(belongToAnyOf(NgfluxApp.class), alwaysTrue())
+        .ignoreDependency(alwaysTrue(), belongToAnyOf(
+            com.mycompany.myapp.config.ApplicationProperties.class
+        ));
 }
