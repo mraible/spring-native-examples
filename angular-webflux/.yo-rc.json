@@ -6,7 +6,7 @@
     "blueprints": [
       {
         "name": "generator-jhipster-native",
-        "version": "0.0.0"
+        "version": "1.0.0"
       }
     ],
     "buildTool": "maven",
@@ -36,7 +36,7 @@
     "otherModules": [
       {
         "name": "generator-jhipster-native",
-        "version": "0.0.0"
+        "version": "1.0.0"
       }
     ],
     "packageName": "com.mycompany.myapp",

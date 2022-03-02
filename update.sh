@@ -10,6 +10,7 @@ do
   cd $app
   #setopt localoptions rmstarsilent
   rm -rf *
-  jhipster-native --with-entities --skip-jhipster-dependencies
+  jhipster-native --with-entities
   ./mvnw package -DskipTests -Pprod,native
+  cd ..
 done
