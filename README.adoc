@@ -12,7 +12,11 @@ This repository contains five apps we (https://github.com/joshlong[@joshlong] an
 - `postgres-webflux` - Angular, WebFlux, R2DBC + PostgreSQL
 - `postgres-mvc` - Angular, Spring MVC, JPA + PostgreSQL
 
-You should be able to create a JHipster monolith with OIDC, then make the following changes.
+If you already have a JHipster app with OIDC, you can make the changes below to make it work with Spring Native.
+
+====
+⚡️ You can also use the https://github.com/jhipster/generator-jhipster-native[JHipster Native blueprint] to generate an app with all of these changes already included!
+====
 
 . Modify `pom.xml` to add Spring Native support:
 +
@@ -142,7 +146,16 @@ logging:
   level:
     root: ERROR
     io.netty: ERROR
-    org.springframework: INFO
+    liquibase: ERROR
+    org.hibernate: ERROR
+    org.springframework: ERROR
+    com.zaxxer.hikari: ERROR
+    org.apache.catalina: ERROR
+    org.apache.tomcat: ERROR
+    tech.jhipster.config: ERROR
+    jdk.event.security: ERROR
+    java.net: ERROR
+    sun.net.www: ERROR
 ----
 
 . There's an issue when using Spring WebFlux if you don't use `-DskipTests` when running `./mvnw package -Pnative`:
